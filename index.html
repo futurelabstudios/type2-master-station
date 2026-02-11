@@ -6,14 +6,24 @@
   <title>Type2 Content OS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <header class="topbar">
-    <p class="kicker">TYPE2FUTURE</p>
-    <h1>Content Growth OS</h1>
-    <p class="sub">Daily operating system for growth: prioritize, publish, learn, improve.</p>
+    <div class="topbar-card">
+      <div class="brand-row">
+        <p class="kicker">TYPE2FUTURE OPERATOR SUITE</p>
+        <span class="status-pill">Live Playbook</span>
+      </div>
+      <h1>Content Growth OS</h1>
+      <p class="sub">Daily operating system for growth: prioritize, publish, learn, improve.</p>
+      <div class="focus-row" aria-hidden="true">
+        <span class="focus-chip">Signal Quality</span>
+        <span class="focus-chip">Conversion Intent</span>
+        <span class="focus-chip">Daily Shipping</span>
+      </div>
+    </div>
   </header>
 
   <nav class="tabs" id="tabs">
@@ -25,7 +35,10 @@
 
   <main class="container">
     <section class="panel active" id="today">
-      <h2>Today</h2>
+      <div class="panel-head">
+        <h2>Today</h2>
+        <p class="panel-sub">Track the core growth numbers and execute your highest-leverage actions.</p>
+      </div>
 
       <div class="row">
         <input type="file" id="csvFile" accept=".csv" />
@@ -59,7 +72,10 @@
     </section>
 
     <section class="panel" id="create">
-      <h2>Create</h2>
+      <div class="panel-head">
+        <h2>Create</h2>
+        <p class="panel-sub">Move from source signal to polished draft with conversion-first structure.</p>
+      </div>
 
       <label for="shiftObjective">Weekly growth objective</label>
       <input id="shiftObjective" type="text" placeholder="Example: lift follows/1k from 0.8 to 1.2" />
@@ -121,8 +137,10 @@
     </section>
 
     <section class="panel" id="intel">
-      <h2>Learn</h2>
-      <p class="sub">Study proven accounts, extract one tactic, apply the same day.</p>
+      <div class="panel-head">
+        <h2>Learn</h2>
+        <p class="panel-sub">Study proven accounts, extract one tactic, and apply it in the same day.</p>
+      </div>
 
       <div id="benchmarkCards" class="cards"></div>
 
@@ -136,8 +154,10 @@
     </section>
 
     <section class="panel" id="review">
-      <h2>Review</h2>
-      <p class="sub">Log results to discover winning formats and pillars.</p>
+      <div class="panel-head">
+        <h2>Review</h2>
+        <p class="panel-sub">Log outcomes and discover the formats that compound follower growth.</p>
+      </div>
 
       <div class="grid2">
         <input id="logDate" type="date" />
