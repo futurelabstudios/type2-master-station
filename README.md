@@ -4,14 +4,14 @@ Mobile-first, minimal growth platform for `@type2future`.
 
 ## Core purpose
 
-Help an operator create high-quality content, learn what is working, and improve follower growth continuously.
+Help an operator publish better content every day and improve follower growth with fast feedback loops.
 
-## Focused modules
+## Modules
 
-- `Today`: KPI diagnostics, daily sprint, next best actions
-- `Create`: signal-to-draft workflow, draft scoring, optional AI assist
-- `Learn`: benchmark accounts + daily study sprint + intel notes
-- `Review`: post log + automatic pattern insights (winning format/pillar/source)
+- `Today`: KPI diagnostics, daily sprint checklist, next-best actions
+- `Create`: signal-to-draft workflow, hook generator, draft scoring
+- `Learn`: benchmark accounts, daily study assignments, notes
+- `Review`: post logging and automatic pattern insights (winning format/pillar/source)
 
 ## Run
 
@@ -19,7 +19,7 @@ Open in browser:
 
 `/Users/futurelabstudios/Downloads/type2future marketing/index.html`
 
-No install or build step required.
+No install or build step is required.
 
 ## Analytics CSV expected
 
@@ -27,12 +27,9 @@ No install or build step required.
 - `Impressions`
 - `Engagements`
 - `New follows`
-- `Unfollows`
 
-The parser also tolerates wider X account overview exports.
+The parser tolerates wider X account overview exports.
 
 ## Storage
 
-All state is local browser storage on your machine.
-
-If AI assist is used, API key is also stored in local browser storage.
+All state is stored in local browser storage on your machine.

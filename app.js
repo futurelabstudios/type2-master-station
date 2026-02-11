@@ -5,15 +5,14 @@ const STORAGE = {
   voiceRules: "t2_min_voice_rules",
   intelNotes: "t2_min_intel_notes",
   postLogs: "t2_min_post_logs",
-  apiKey: "t2_min_api_key",
 };
 
 const DAILY_TASKS = [
   { id: "t1", text: "Review KPI diagnostics and choose one growth priority" },
   { id: "t2", text: "Study 3 benchmark accounts and extract one tactic" },
   { id: "t3", text: "Draft one flagship post and score it 80+" },
-  { id: "t4", text: "Publish with clear conversion close (reason to follow)" },
-  { id: "t5", text: "Log today's post result in Review section" },
+  { id: "t4", text: "Publish with clear reason-to-follow close" },
+  { id: "t5", text: "Log post results in Review" },
 ];
 
 const HOOKS = {
@@ -23,14 +22,14 @@ const HOOKS = {
     "The biggest shift is not better models. It is better civilization design.",
   ],
   contrarian: [
-    "Most people optimize for virality. We should optimize for civilization progress.",
+    "Most creators optimize for virality. We should optimize for civilization progress.",
     "Cheap intelligence does not remove ambition. It multiplies it.",
     "The new moat is not code. It is taste, speed, and coherent vision.",
   ],
   prediction: [
     "In 24 months, agent-native workflows will be default for high performers.",
-    "By 2030, acceleration mindset will separate winners from spectators.",
-    "Soon, bottleneck removal will matter more than content production itself.",
+    "By 2030, acceleration mindset will separate builders from spectators.",
+    "Soon, bottleneck removal will matter more than content volume.",
   ],
   question: [
     "What bottleneck would you remove first to accelerate abundance?",
@@ -43,71 +42,50 @@ const BENCHMARKS = [
   {
     handle: "lexfridman",
     name: "Lex Fridman",
-    why: "Strong high-trust frontier signal framing, similar to your best-performing pattern.",
-    learn: "Use source + implication structure with clean narrative arc.",
+    why: "High-trust frontier framing and clean narrative structure.",
+    learn: "Use source signal + practical implication in one clear arc.",
     tags: ["signal", "authority"],
   },
   {
     handle: "demishassabis",
     name: "Demis Hassabis",
-    why: "Science-backed frontier updates that convert trust into attention.",
-    learn: "Anchor claims in concrete progress and measurable outcomes.",
+    why: "Science-backed updates that build credibility quickly.",
+    learn: "Anchor claims to measurable progress, not abstract hype.",
     tags: ["signal", "technical"],
   },
   {
     handle: "sama",
     name: "Sam Altman",
-    why: "Concise momentum posts with strategic implications.",
-    learn: "Short format can still carry authority if implication is clear.",
+    why: "Short posts with strategic implication and high shareability.",
+    learn: "Compress the message without losing conviction.",
     tags: ["conversion", "brevity"],
-  },
-  {
-    handle: "EMostaque",
-    name: "Emad",
-    why: "Operator-style future narrative with high builder energy.",
-    learn: "Blend ecosystem insight with directional thesis.",
-    tags: ["ecosystem", "momentum"],
   },
   {
     handle: "garrytan",
     name: "Garry Tan",
-    why: "Practical techno-optimism for founders and builders.",
-    learn: "Translate macro optimism into concrete operator action.",
+    why: "Practical techno-optimism with founder relevance.",
+    learn: "Turn macro optimism into specific actions for builders.",
     tags: ["founders", "conversion"],
   },
   {
-    handle: "nateliason",
-    name: "Nat Eliason",
-    why: "High shipping cadence and proof-of-work content.",
-    learn: "Show receipts and practical outputs, not only opinions.",
-    tags: ["builder", "proof"],
-  },
-  {
     handle: "beffjezos",
-    name: "Beff (e/acc)",
-    why: "Closest narrative overlap with acceleration and Kardashev framing.",
-    learn: "Use punchy hooks, then add your own clarity layer.",
+    name: "Beff",
+    why: "Narrative overlap with e/acc and Kardashev framing.",
+    learn: "Lead with high-energy hooks, then add structured clarity.",
     tags: ["kardashev", "hooks", "reach"],
   },
   {
     handle: "_sholtodouglas",
     name: "Sholto Douglas",
-    why: "Technical future framing with strong timeline signals.",
-    learn: "Combine technical depth with broader implication.",
+    why: "Technical future framing with useful timeline signals.",
+    learn: "Pair technical observation with strategic consequence.",
     tags: ["technical", "signal"],
-  },
-  {
-    handle: "tszzl",
-    name: "roon",
-    why: "Strong memetic hooks and attention capture.",
-    learn: "Write better opening lines, then keep your clarity and substance.",
-    tags: ["hooks", "reach"],
   },
   {
     handle: "elonmusk",
     name: "Elon Musk",
-    why: "Core upstream narrative source for energy, space, and scale.",
-    learn: "Lead with first-principles framing and consequence.",
+    why: "Upstream narrative driver for energy, space, and scale.",
+    learn: "Open with first-principles framing and direct consequence.",
     tags: ["vision", "first-principles"],
   },
 ];
@@ -151,7 +129,6 @@ function bindEvents() {
   el("assignStudy").addEventListener("click", assignStudy);
   el("saveIntelNotes").addEventListener("click", saveIntelNotes);
   el("addPostLog").addEventListener("click", addPostLog);
-  el("runAi").addEventListener("click", runAi);
   el("shiftObjective").addEventListener("input", saveOperatorSettings);
   el("voiceRules").addEventListener("input", saveOperatorSettings);
 }
@@ -165,7 +142,9 @@ function loadSaved() {
       kpi = computeKpi(analytics);
       renderKpis();
       renderDiagnostics();
-    } catch {}
+    } catch {
+      // ignore malformed local data
+    }
   }
 
   const rawChecklist = localStorage.getItem(STORAGE.checklist);
@@ -176,7 +155,9 @@ function loadSaved() {
         const box = document.querySelector(`#dailyChecklist input[data-id='${s.id}']`);
         if (box) box.checked = !!s.checked;
       });
-    } catch {}
+    } catch {
+      // ignore malformed local data
+    }
   }
   updateChecklistProgress();
 
@@ -185,9 +166,6 @@ function loadSaved() {
   if (savedRules) el("voiceRules").value = savedRules;
 
   el("intelNotes").value = localStorage.getItem(STORAGE.intelNotes) || "";
-
-  const key = localStorage.getItem(STORAGE.apiKey);
-  if (key) el("apiKey").value = key;
 }
 
 function setTodayDate() {
@@ -214,7 +192,10 @@ function initChecklist() {
 }
 
 function saveChecklist() {
-  const state = qsa("#dailyChecklist input[type='checkbox']").map((b) => ({ id: b.dataset.id, checked: b.checked }));
+  const state = qsa("#dailyChecklist input[type='checkbox']").map((b) => ({
+    id: b.dataset.id,
+    checked: b.checked,
+  }));
   localStorage.setItem(STORAGE.checklist, JSON.stringify(state));
 }
 
@@ -277,7 +258,20 @@ function parseDateSafe(value) {
   if (!Number.isNaN(d.getTime())) return d;
   const m = String(value).match(/^\w{3},\s(\w{3})\s(\d{1,2}),\s(\d{4})$/);
   if (!m) return null;
-  const months = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+  const months = {
+    Jan: 0,
+    Feb: 1,
+    Mar: 2,
+    Apr: 3,
+    May: 4,
+    Jun: 5,
+    Jul: 6,
+    Aug: 7,
+    Sep: 8,
+    Oct: 9,
+    Nov: 10,
+    Dec: 11,
+  };
   if (months[m[1]] === undefined) return null;
   return new Date(Number(m[3]), months[m[1]], Number(m[2]));
 }
@@ -292,7 +286,6 @@ function normalizeAnalytics(rows) {
         impressions: Number(r.Impressions || 0),
         engagements: Number(r.Engagements || 0),
         newFollows: Number(r["New follows"] || 0),
-        unfollows: Number(r.Unfollows || 0),
       };
     })
     .filter(Boolean)
@@ -321,7 +314,7 @@ function computeKpi(data) {
     er: imp ? (eng / imp) * 100 : 0,
     f1k: imp ? (follows / imp) * 1000 : 0,
     dImp: pImp ? ((imp - pImp) / pImp) * 100 : 0,
-    dEr: pImp ? ((eng / imp) * 100 - (pEng / pImp) * 100) : 0,
+    dEr: pImp ? (eng / imp) * 100 - (pEng / pImp) * 100 : 0,
     dF1k: pImp ? (follows / imp) * 1000 - (pFollows / pImp) * 1000 : 0,
   };
 }
@@ -336,20 +329,21 @@ function renderKpis() {
 function renderDiagnostics() {
   const wrap = el("diagnostics");
   if (!kpi) {
-    wrap.innerHTML = `<div>Upload analytics CSV to unlock smart diagnostics.</div>`;
+    wrap.innerHTML = "<div>Upload analytics CSV to unlock diagnostics.</div>";
     return;
   }
 
-  const lines = [];
-  lines.push(`Impressions trend: ${signed(kpi.dImp)}% vs previous 28 days.`);
-  lines.push(`Engagement rate trend: ${signed(kpi.dEr)}pp.`);
-  lines.push(`Follow conversion trend: ${signed(kpi.dF1k)} follows per 1k impressions.`);
+  const lines = [
+    `Impressions trend: ${signed(kpi.dImp)}% vs previous 28 days.`,
+    `Engagement trend: ${signed(kpi.dEr)}pp.`,
+    `Follow conversion trend: ${signed(kpi.dF1k)} follows per 1k impressions.`,
+  ];
 
   if (kpi.f1k < 1) {
-    lines.push("Priority: conversion is weak. Use clearer value proposition and direct follow close in every flagship post.");
+    lines.push("Priority: conversion is weak. End each flagship post with a specific reason to follow.");
   }
   if (kpi.er < 2.2) {
-    lines.push("Priority: engagement is soft. Add stronger claim + concrete signal + explicit implication.");
+    lines.push("Priority: engagement is soft. Sharpen hook, signal, and implication.");
   }
 
   wrap.innerHTML = lines.map((x) => `<div>${escape(x)}</div>`).join("");
@@ -359,24 +353,28 @@ function renderActions() {
   const wrap = el("nextActions");
   const items = [];
 
-  if (!kpi) items.push("Upload analytics in Today section first.");
-  if (kpi && kpi.f1k < 1) items.push("In today's flagship post, add explicit reason to follow this account.");
-  if (kpi && kpi.er < 2.2) items.push("Use one concrete source signal and one sharp implication.");
+  if (!kpi) items.push("Upload analytics in Today first.");
+  if (kpi && kpi.f1k < 1) items.push("Write one explicit reason-to-follow close in today's post.");
+  if (kpi && kpi.er < 2.2) items.push("Use one concrete signal and one practical implication.");
 
   const logs = getPostLogs();
-  if (logs.length < 5) items.push("Log at least 5 published posts in Review to identify winning patterns.");
-  if (!el("shiftObjective").value.trim()) items.push("Set a clear shift objective in Create section.");
+  if (logs.length < 5) items.push("Log at least 5 posts in Review to unlock reliable pattern detection.");
+  if (!el("shiftObjective").value.trim()) items.push("Set your weekly growth objective in Create.");
 
   const boxes = qsa("#dailyChecklist input[type='checkbox']");
-  const pending = boxes.filter((b) => !b.checked).slice(0, 2).map((b) => {
-    const task = DAILY_TASKS.find((t) => t.id === b.dataset.id);
-    return task ? task.text : "Finish daily sprint";
-  });
+  const pending = boxes
+    .filter((b) => !b.checked)
+    .slice(0, 2)
+    .map((b) => {
+      const task = DAILY_TASKS.find((t) => t.id === b.dataset.id);
+      return task ? task.text : "Finish daily sprint";
+    });
+
   items.push(...pending);
 
   wrap.innerHTML = items.length
     ? items.slice(0, 6).map((x) => `<div>${escape(x)}</div>`).join("")
-    : `<div>All critical actions complete. Execute and review results.</div>`;
+    : "<div>Critical actions complete. Publish and move to Review.</div>";
 }
 
 function genHook() {
@@ -385,27 +383,38 @@ function genHook() {
   const bank = HOOKS[style] || HOOKS.thesis;
   const base = bank[Math.floor(Math.random() * bank.length)];
   const suffix = {
-    follow: " Follow for high-signal Type 2 future intelligence.",
-    authority: " Here is the practical implication.",
-    discussion: " What do you think changes first?",
+    follow: " Follow for high-signal Type2Future frontier synthesis.",
+    authority: " Practical implication below.",
+    discussion: " What changes first in your view?",
   }[objective] || "";
   el("hookOutput").value = base + suffix;
 }
 
 function buildDraft() {
-  const hook = el("hookOutput").value.trim() || "The acceleration window is open, but most people still miss the implication.";
+  const hook =
+    el("hookOutput").value.trim() ||
+    "The acceleration window is open, but most people still miss the implication.";
   const sourceAccount = el("sourceAccount").value;
   const signal = el("signalInput").value.trim();
   const insight = el("insightInput").value.trim();
-  const close = el("closeInput").value.trim() || "If this resonates, follow for daily frontier signal synthesis.";
+  const close =
+    el("closeInput").value.trim() ||
+    "If this helps you think bigger and build faster, follow @type2future.";
 
-  const src = sourceAccount ? `Source context: @${sourceAccount}` : "Source context: [optional account/event]";
+  const src = sourceAccount
+    ? `Source context: @${sourceAccount}`
+    : "Source context: [account, event, or data point]";
+
   const draft = [
     hook,
     "",
     src,
-    signal ? `Signal: ${signal}` : "Signal: [insert concrete event, quote, or data point]",
-    insight ? `Implication: ${insight}` : "Implication: [what this changes in practical terms]",
+    signal
+      ? `Signal: ${signal}`
+      : "Signal: [insert one concrete event, quote, or metric]",
+    insight
+      ? `Implication: ${insight}`
+      : "Implication: [what this changes for builders and society]",
     "",
     close,
   ].join("\n");
@@ -430,32 +439,65 @@ function scoreDraft() {
   const len = text.length;
   const lines = text.split(/\n+/).filter(Boolean).length;
   const hasNumber = /\d/.test(text);
-  const hasSignal = /(signal|data|study|report|says|according|source)/i.test(text);
+  const hasSignal = /(signal|data|study|report|according|source)/i.test(text);
   const hasImplication = /(implication|means|therefore|this changes|so what|result)/i.test(text);
   const hasQuestion = /\?/.test(text);
   const hasFollowCta = /follow/i.test(text);
   const hype = (text.match(/\b(lfg|insane|crazy|legend|wild|moon)\b/gi) || []).length;
 
-  if (len >= 130 && len <= 420) { score += 22; notes.push("Good length for depth + readability."); }
-  else if (len >= 90) { score += 12; notes.push("Length is acceptable; consider tighter structure."); }
-  else { score += 4; notes.push("Too short for high-context conversion."); }
+  if (len >= 130 && len <= 420) {
+    score += 22;
+    notes.push("Good length for depth and readability.");
+  } else if (len >= 90) {
+    score += 12;
+    notes.push("Length is acceptable; tighten structure.");
+  } else {
+    score += 4;
+    notes.push("Too short for high-context conversion.");
+  }
 
-  if (lines >= 4) { score += 14; notes.push("Readable multi-line structure."); }
-  else { score += 5; notes.push("Add line breaks for scanability."); }
+  if (lines >= 4) {
+    score += 14;
+    notes.push("Readable multi-line structure.");
+  } else {
+    score += 5;
+    notes.push("Add line breaks for scanability.");
+  }
 
-  if (hasNumber || hasSignal) { score += 16; notes.push("Concrete source signal detected."); }
-  else { notes.push("Add concrete source signal or number."); }
+  if (hasNumber || hasSignal) {
+    score += 16;
+    notes.push("Concrete source signal detected.");
+  } else {
+    notes.push("Add a concrete source signal or number.");
+  }
 
-  if (hasImplication) { score += 18; notes.push("Strong implication language."); }
-  else { notes.push("State implication explicitly."); }
+  if (hasImplication) {
+    score += 18;
+    notes.push("Strong implication language.");
+  } else {
+    notes.push("State implication explicitly.");
+  }
 
-  if (hasQuestion) { score += 10; notes.push("Discussion trigger present."); }
-  if (hasFollowCta) { score += 10; notes.push("Follow conversion CTA present."); }
-  else { notes.push("Add explicit reason-to-follow close."); }
+  if (hasQuestion) {
+    score += 10;
+    notes.push("Discussion trigger present.");
+  }
 
-  if (hype === 0) score += 10;
-  else if (hype === 1) score += 5;
-  else { score -= 8; notes.push("Reduce hype words; keep precision high."); }
+  if (hasFollowCta) {
+    score += 10;
+    notes.push("Follow conversion close present.");
+  } else {
+    notes.push("Add a reason-to-follow close.");
+  }
+
+  if (hype === 0) {
+    score += 10;
+  } else if (hype === 1) {
+    score += 5;
+  } else {
+    score -= 8;
+    notes.push("Reduce hype words and keep precision high.");
+  }
 
   score = Math.max(0, Math.min(100, score));
   el("draftScore").textContent = `Score: ${score} / 100`;
@@ -468,20 +510,24 @@ async function copyDraft() {
   if (!text) return;
   try {
     await navigator.clipboard.writeText(text);
-  } catch {}
+  } catch {
+    // clipboard may fail silently
+  }
 }
 
 function renderBenchmarks() {
-  const body = el("benchmarkBody");
-  body.innerHTML = "";
+  const wrap = el("benchmarkCards");
+  wrap.innerHTML = "";
+
   BENCHMARKS.forEach((b) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><a href="https://x.com/${b.handle}" target="_blank" rel="noreferrer">@${b.handle}</a><br/><span class="tiny">${escape(b.name)}</span></td>
-      <td>${escape(b.why)}</td>
-      <td>${escape(b.learn)}</td>
-    `;
-    body.appendChild(tr);
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = [
+      `<h4><a href=\"https://x.com/${b.handle}\" target=\"_blank\" rel=\"noreferrer\">@${b.handle}</a> <span class=\"tiny\">${escape(b.name)}</span></h4>`,
+      `<p><strong>Why:</strong> ${escape(b.why)}</p>`,
+      `<p><strong>Learn:</strong> ${escape(b.learn)}</p>`,
+    ].join("");
+    wrap.appendChild(card);
   });
 }
 
@@ -500,17 +546,24 @@ function populateSourceSelects() {
 
 function candidateBenchmarks() {
   if (!kpi) return BENCHMARKS;
-  if (kpi.f1k < 1) return BENCHMARKS.filter((b) => b.tags.includes("conversion") || b.tags.includes("hooks"));
-  if (kpi.er < 2.2) return BENCHMARKS.filter((b) => b.tags.includes("signal") || b.tags.includes("authority"));
-  return BENCHMARKS.filter((b) => b.tags.includes("technical") || b.tags.includes("vision") || b.tags.includes("proof"));
+  if (kpi.f1k < 1) {
+    return BENCHMARKS.filter((b) => b.tags.includes("conversion") || b.tags.includes("hooks"));
+  }
+  if (kpi.er < 2.2) {
+    return BENCHMARKS.filter((b) => b.tags.includes("signal") || b.tags.includes("authority"));
+  }
+  return BENCHMARKS.filter((b) => b.tags.includes("technical") || b.tags.includes("vision"));
 }
 
 function assignStudy() {
   const pool = candidateBenchmarks();
   const picks = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
   const wrap = el("studyOutput");
+
   wrap.innerHTML = picks
-    .map((p, i) => `<div><strong>Study ${i + 1}: @${p.handle}</strong><br/>Task: ${escape(p.learn)}<br/>Apply one tactic in today's flagship draft.</div>`)
+    .map((p, i) => {
+      return `<div><strong>Study ${i + 1}: @${p.handle}</strong><br/>Task: ${escape(p.learn)}<br/>Apply one tactic in today's draft.</div>`;
+    })
     .join("");
 }
 
@@ -527,7 +580,11 @@ function saveOperatorSettings() {
 function getPostLogs() {
   const raw = localStorage.getItem(STORAGE.postLogs);
   if (!raw) return [];
-  try { return JSON.parse(raw); } catch { return []; }
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
 }
 
 function addPostLog() {
@@ -539,7 +596,6 @@ function addPostLog() {
     impressions: Number(el("logImp").value || 0),
     engagements: Number(el("logEng").value || 0),
     follows: Number(el("logFollows").value || 0),
-    profileVisits: Number(el("logPv").value || 0),
     note: el("logNote").value.trim(),
     createdAt: Date.now(),
   };
@@ -550,35 +606,39 @@ function addPostLog() {
   logs.push(log);
   localStorage.setItem(STORAGE.postLogs, JSON.stringify(logs));
 
-  ["logImp", "logEng", "logFollows", "logPv", "logNote"].forEach((id) => { el(id).value = ""; });
+  ["logImp", "logEng", "logFollows", "logNote"].forEach((id) => {
+    el(id).value = "";
+  });
+
   renderPostLogs();
   renderActions();
 }
 
 function renderPostLogs() {
   const logs = getPostLogs();
-  const body = el("postLogBody");
-  body.innerHTML = "";
+  const wrap = el("postLogList");
+  wrap.innerHTML = "";
 
   if (!logs.length) {
-    body.innerHTML = '<tr><td colspan="5" class="tiny">No logs yet.</td></tr>';
+    wrap.innerHTML = '<article class="card"><p class="tiny">No logs yet.</p></article>';
     el("reviewInsights").innerHTML = "<div>Log at least 5 posts to unlock pattern insights.</div>";
     return;
   }
 
   const sorted = [...logs].sort((a, b) => b.createdAt - a.createdAt);
-  sorted.slice(0, 25).forEach((r) => {
+  sorted.slice(0, 30).forEach((r) => {
     const f1k = r.impressions ? (r.follows / r.impressions) * 1000 : 0;
     const er = r.impressions ? (r.engagements / r.impressions) * 100 : 0;
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${escape(r.date || "-")}</td>
-      <td>${escape(r.format)}</td>
-      <td>${escape(r.pillar)}</td>
-      <td>${f1k.toFixed(2)}</td>
-      <td>${er.toFixed(2)}</td>
-    `;
-    body.appendChild(tr);
+
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = [
+      `<h4>${escape(r.date || "-")} <span class="tiny">${escape(r.format)}</span></h4>`,
+      `<p><strong>Pillar:</strong> ${escape(r.pillar)}</p>`,
+      `<p><strong>F/1k:</strong> ${f1k.toFixed(2)} | <strong>ER:</strong> ${er.toFixed(2)}%</p>`,
+      r.note ? `<p><strong>Note:</strong> ${escape(r.note)}</p>` : "",
+    ].join("");
+    wrap.appendChild(card);
   });
 
   renderReviewInsights(logs);
@@ -593,11 +653,12 @@ function renderReviewInsights(logs) {
   const bestPillar = topByMetric(byPillar, "er");
   const bestSource = topByMetric(bySource, "f1k");
 
-  const lines = [];
-  lines.push(`Best format by follow conversion: ${bestFormat ? bestFormat.key : "-"} (${bestFormat ? bestFormat.value.toFixed(2) : "-"} f/1k)`);
-  lines.push(`Best pillar by engagement rate: ${bestPillar ? bestPillar.key : "-"} (${bestPillar ? bestPillar.value.toFixed(2) : "-"}%)`);
-  lines.push(`Best source-account lift: ${bestSource ? "@" + bestSource.key : "-"} (${bestSource ? bestSource.value.toFixed(2) : "-"} f/1k)`);
-  lines.push("Action: next 3 posts should copy the winning format + pillar pattern.");
+  const lines = [
+    `Best format by follow conversion: ${bestFormat ? bestFormat.key : "-"} (${bestFormat ? bestFormat.value.toFixed(2) : "-"} f/1k)`,
+    `Best pillar by engagement: ${bestPillar ? bestPillar.key : "-"} (${bestPillar ? bestPillar.value.toFixed(2) : "-"}%)`,
+    `Best source-account lift: ${bestSource ? "@" + bestSource.key : "-"} (${bestSource ? bestSource.value.toFixed(2) : "-"} f/1k)`,
+    "Action: next 3 posts should copy winning format and pillar combination.",
+  ];
 
   el("reviewInsights").innerHTML = lines.map((x) => `<div>${escape(x)}</div>`).join("");
 }
@@ -619,72 +680,10 @@ function topByMetric(grouped, metric) {
     key,
     value: arr.reduce((a, b) => a + b[metric], 0) / arr.length,
   }));
+
   if (!rows.length) return null;
   rows.sort((a, b) => b.value - a.value);
   return rows[0];
-}
-
-async function runAi() {
-  const key = el("apiKey").value.trim();
-  if (!key) {
-    el("aiOutput").value = "Add API key first.";
-    return;
-  }
-  localStorage.setItem(STORAGE.apiKey, key);
-
-  const mode = el("aiMode").value;
-  const objective = el("shiftObjective").value.trim();
-  const voice = el("voiceRules").value.trim();
-  const draft = el("postDraft").value.trim();
-  const notes = el("intelNotes").value.trim();
-  const modePrompt = {
-    improve: "Improve this draft for clarity, authority, and follow conversion. Return final draft only.",
-    ideas: "Generate 10 high-quality post ideas. For each: hook, signal, implication, close.",
-    replies: "Generate 10 strategic replies to frontier AI/energy posts. Each must add insight, not praise.",
-  }[mode];
-
-  const bestFormat = topByMetric(groupBy(getPostLogs(), "format"), "f1k");
-
-  const system = [
-    "You are a social media strategist for @type2future.",
-    "Primary goal: create high-quality content that increases follower growth and authority.",
-    `Shift objective: ${objective || "none"}`,
-    `Voice rules: ${voice}`,
-    `Winning format so far: ${bestFormat ? bestFormat.key : "unknown"}`,
-    `Intel notes: ${notes || "none"}`,
-    modePrompt,
-  ].join("\n\n");
-
-  const user = mode === "improve" ? (draft || "No draft provided.") : (el("signalInput").value.trim() || "Use current context.");
-
-  el("aiOutput").value = "Running AI...";
-
-  try {
-    const res = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${key}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4.1-mini",
-        input: [
-          { role: "system", content: [{ type: "text", text: system }] },
-          { role: "user", content: [{ type: "text", text: user }] },
-        ],
-      }),
-    });
-
-    if (!res.ok) {
-      const t = await res.text();
-      throw new Error(t || `HTTP ${res.status}`);
-    }
-
-    const data = await res.json();
-    el("aiOutput").value = data.output_text || "No output text returned.";
-  } catch (err) {
-    el("aiOutput").value = `AI error: ${err.message}`;
-  }
 }
 
 function onCsvUpload(e) {
@@ -697,6 +696,7 @@ function onCsvUpload(e) {
       el("diagnostics").innerHTML = "<div>Could not parse CSV. Check export format.</div>";
       return;
     }
+
     localStorage.setItem(STORAGE.analyticsRaw, JSON.stringify(raw));
     kpi = computeKpi(analytics);
     renderKpis();
@@ -707,12 +707,13 @@ function onCsvUpload(e) {
 
 function loadDemoCsv() {
   const demo = [
-    { Date: "Wed, Feb 11, 2026", Impressions: 906, Engagements: 14, "New follows": 0, Unfollows: 0 },
-    { Date: "Tue, Feb 10, 2026", Impressions: 891, Engagements: 7, "New follows": 0, Unfollows: 0 },
-    { Date: "Mon, Feb 9, 2026", Impressions: 965, Engagements: 37, "New follows": 2, Unfollows: 1 },
-    { Date: "Sun, Feb 8, 2026", Impressions: 1787, Engagements: 51, "New follows": 0, Unfollows: 2 },
-    { Date: "Sat, Feb 7, 2026", Impressions: 2450, Engagements: 32, "New follows": 0, Unfollows: 1 },
+    { Date: "Wed, Feb 11, 2026", Impressions: 906, Engagements: 14, "New follows": 0 },
+    { Date: "Tue, Feb 10, 2026", Impressions: 891, Engagements: 7, "New follows": 0 },
+    { Date: "Mon, Feb 9, 2026", Impressions: 965, Engagements: 37, "New follows": 2 },
+    { Date: "Sun, Feb 8, 2026", Impressions: 1787, Engagements: 51, "New follows": 0 },
+    { Date: "Sat, Feb 7, 2026", Impressions: 2450, Engagements: 32, "New follows": 0 },
   ];
+
   analytics = normalizeAnalytics(demo);
   kpi = computeKpi(analytics);
   renderKpis();

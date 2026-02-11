@@ -11,11 +11,9 @@
 </head>
 <body>
   <header class="topbar">
-    <div>
-      <p class="kicker">TYPE2FUTURE</p>
-      <h1>Content Growth OS</h1>
-      <p class="sub">Minimal daily system: analyze, create, study winners, review results.</p>
-    </div>
+    <p class="kicker">TYPE2FUTURE</p>
+    <h1>Content Growth OS</h1>
+    <p class="sub">Daily operating system for growth: prioritize, publish, learn, improve.</p>
   </header>
 
   <nav class="tabs" id="tabs">
@@ -31,7 +29,7 @@
 
       <div class="row">
         <input type="file" id="csvFile" accept=".csv" />
-        <button class="btn alt" id="demoCsv">Use Demo</button>
+        <button class="btn alt" id="demoCsv">Load Sample Data</button>
       </div>
 
       <div class="metrics">
@@ -44,7 +42,7 @@
           <p id="mEr">-</p>
         </article>
         <article>
-          <h3>Follows/1k impressions</h3>
+          <h3>Follows/1k</h3>
           <p id="mF1k">-</p>
         </article>
       </div>
@@ -63,11 +61,11 @@
     <section class="panel" id="create">
       <h2>Create</h2>
 
-      <label for="shiftObjective">Shift objective</label>
-      <input id="shiftObjective" type="text" placeholder="Example: improve follows/1k this week" />
+      <label for="shiftObjective">Weekly growth objective</label>
+      <input id="shiftObjective" type="text" placeholder="Example: lift follows/1k from 0.8 to 1.2" />
 
-      <label for="voiceRules">Voice rules</label>
-      <textarea id="voiceRules" rows="3">Ambitious, precise, positive, abundance-first. No generic hype. Always include concrete implication.</textarea>
+      <label for="voiceRules">Voice guardrails</label>
+      <textarea id="voiceRules" rows="3">Ambitious, precise, positive, abundance-first. No generic hype. Always include a concrete implication.</textarea>
 
       <div class="grid2">
         <div>
@@ -93,13 +91,13 @@
       <select id="sourceAccount"></select>
 
       <label for="signalInput">Source signal</label>
-      <textarea id="signalInput" rows="3" placeholder="Who said what, where, and why it matters"></textarea>
+      <textarea id="signalInput" rows="3" placeholder="What happened? Who said what? Why is this signal strong?"></textarea>
 
-      <label for="insightInput">Your interpretation</label>
-      <textarea id="insightInput" rows="3" placeholder="What is the key implication for Type2Future audience?"></textarea>
+      <label for="insightInput">Type2 interpretation</label>
+      <textarea id="insightInput" rows="3" placeholder="What is the practical implication for builders and society?"></textarea>
 
       <label for="closeInput">Close / CTA</label>
-      <textarea id="closeInput" rows="2" placeholder="Question or action that helps conversion"></textarea>
+      <textarea id="closeInput" rows="2" placeholder="Give one reason to follow."></textarea>
 
       <div class="row">
         <button class="btn alt" id="genHook">Generate Hook</button>
@@ -110,60 +108,36 @@
       <textarea id="hookOutput" rows="2"></textarea>
 
       <label for="postDraft">Draft</label>
-      <textarea id="postDraft" rows="10"></textarea>
+      <textarea id="postDraft" rows="9"></textarea>
 
       <div class="row">
         <button class="btn alt" id="scoreDraft">Score Draft</button>
-        <button class="btn alt" id="copyDraft">Copy Draft</button>
+        <button class="btn" id="copyDraft">Copy Draft</button>
       </div>
 
       <p class="mono" id="draftScore">Score: -</p>
       <div class="progress"><span id="scoreBar"></span></div>
       <div id="scoreFeedback" class="stack"></div>
-
-      <h3>AI Assist (optional)</h3>
-      <label for="apiKey">OpenAI API key</label>
-      <input id="apiKey" type="password" placeholder="sk-..." />
-      <div class="row">
-        <select id="aiMode">
-          <option value="improve">Improve draft</option>
-          <option value="ideas">Generate 10 ideas</option>
-          <option value="replies">Generate 10 strategic replies</option>
-        </select>
-        <button class="btn" id="runAi">Run AI</button>
-      </div>
-      <textarea id="aiOutput" rows="10" placeholder="AI output"></textarea>
     </section>
 
     <section class="panel" id="intel">
-      <h2>Learn From Winners</h2>
-      <p class="sub">Closest accounts to your style and mission. Study structure, clarity, and conversion patterns.</p>
+      <h2>Learn</h2>
+      <p class="sub">Study proven accounts, extract one tactic, apply the same day.</p>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Account</th>
-              <th>Why it matters</th>
-              <th>What to learn</th>
-            </tr>
-          </thead>
-          <tbody id="benchmarkBody"></tbody>
-        </table>
-      </div>
+      <div id="benchmarkCards" class="cards"></div>
 
       <h3>Daily Study Sprint</h3>
       <button class="btn alt" id="assignStudy">Assign 3 Accounts for Today</button>
       <div id="studyOutput" class="stack"></div>
 
-      <label for="intelNotes">What is working today?</label>
-      <textarea id="intelNotes" rows="8" placeholder="Write specific tactics you want to apply immediately."></textarea>
+      <label for="intelNotes">Winning patterns observed</label>
+      <textarea id="intelNotes" rows="6" placeholder="Write tactics you can use in the next 24 hours."></textarea>
       <button class="btn" id="saveIntelNotes">Save Notes</button>
     </section>
 
     <section class="panel" id="review">
-      <h2>Review Results</h2>
-      <p class="sub">Log each important post. The app identifies winning patterns.</p>
+      <h2>Review</h2>
+      <p class="sub">Log results to discover winning formats and pillars.</p>
 
       <div class="grid2">
         <input id="logDate" type="date" />
@@ -193,31 +167,11 @@
         <input id="logFollows" type="number" min="0" placeholder="Follows" />
       </div>
 
-      <div class="grid2">
-        <input id="logPv" type="number" min="0" placeholder="Profile visits" />
-        <input id="logNote" type="text" placeholder="Observation" />
-      </div>
-
+      <input id="logNote" type="text" placeholder="What worked or failed?" />
       <button class="btn" id="addPostLog">Add Post Log</button>
 
       <div id="reviewInsights" class="stack"></div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Format</th>
-              <th>Pillar</th>
-              <th>F/1k</th>
-              <th>ER%</th>
-            </tr>
-          </thead>
-          <tbody id="postLogBody">
-            <tr><td colspan="5" class="tiny">No logs yet.</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div id="postLogList" class="cards compact"></div>
     </section>
   </main>
 
