@@ -2,515 +2,224 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Type2 Master Station</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Type2 Content OS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="bg-orb orb-1"></div>
-  <div class="bg-orb orb-2"></div>
-  <div class="bg-grid"></div>
+  <header class="topbar">
+    <div>
+      <p class="kicker">TYPE2FUTURE</p>
+      <h1>Content Growth OS</h1>
+      <p class="sub">Minimal daily system: analyze, create, study winners, review results.</p>
+    </div>
+  </header>
 
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
-        <p class="kicker">TYPE2FUTURE</p>
-        <h1>Master Station</h1>
-        <p class="sub">A pro operating system to grow impact on X.</p>
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-target="today">Today</button>
+    <button class="tab" data-target="create">Create</button>
+    <button class="tab" data-target="intel">Learn</button>
+    <button class="tab" data-target="review">Review</button>
+  </nav>
+
+  <main class="container">
+    <section class="panel active" id="today">
+      <h2>Today</h2>
+
+      <div class="row">
+        <input type="file" id="csvFile" accept=".csv" />
+        <button class="btn alt" id="demoCsv">Use Demo</button>
       </div>
 
-      <div class="goal-card card">
-        <h2>Goal Tracker</h2>
-        <label for="currentFollowers">Current followers</label>
-        <input id="currentFollowers" type="number" min="0" value="291" />
-        <label for="targetFollowers">Target followers</label>
-        <input id="targetFollowers" type="number" min="1" value="10000" />
-        <label for="targetDate">Target date (optional)</label>
-        <input id="targetDate" type="date" />
-        <button class="btn" id="recalcGoal">Recalculate</button>
-        <div class="goal-stats mono">
-          <div><span>Days at current pace:</span> <strong id="daysToTarget">-</strong></div>
-          <div><span>Needed follows/day:</span> <strong id="neededPerDay">-</strong></div>
-        </div>
+      <div class="metrics">
+        <article>
+          <h3>Impressions/day</h3>
+          <p id="mImp">-</p>
+        </article>
+        <article>
+          <h3>Engagement rate</h3>
+          <p id="mEr">-</p>
+        </article>
+        <article>
+          <h3>Follows/1k impressions</h3>
+          <p id="mF1k">-</p>
+        </article>
       </div>
 
-      <nav class="nav card">
-        <button class="nav-btn active" data-view="dashboard">Dashboard</button>
-        <button class="nav-btn" data-view="strategy">Strategy</button>
-        <button class="nav-btn" data-view="operator">Operator Console</button>
-        <button class="nav-btn" data-view="intel">Growth Intel</button>
-        <button class="nav-btn" data-view="content">Content Lab</button>
-        <button class="nav-btn" data-view="analytics">Analytics</button>
-        <button class="nav-btn" data-view="calendar">Weekly Plan</button>
-        <button class="nav-btn" data-view="ai">AI Studio</button>
-        <button class="nav-btn" data-view="experiments">Experiments</button>
-      </nav>
+      <div id="diagnostics" class="stack"></div>
 
-      <div class="card beginner-box">
-        <h2>Beginner Mode</h2>
-        <label class="toggle">
-          <input id="beginnerMode" type="checkbox" checked />
-          <span>Show guided tips and plain-language instructions</span>
-        </label>
-        <p id="beginnerHint" class="tiny">Tip: Start in Dashboard and complete the Daily Sprint in order.</p>
-      </div>
-    </aside>
+      <h3>Daily Sprint</h3>
+      <div class="checklist" id="dailyChecklist"></div>
+      <div class="progress"><span id="dailyProgress"></span></div>
+      <p class="tiny" id="dailyProgressText">0/0 complete</p>
 
-    <main class="main">
-      <header class="topbar card">
+      <h3>Next Best Actions</h3>
+      <div id="nextActions" class="stack"></div>
+    </section>
+
+    <section class="panel" id="create">
+      <h2>Create</h2>
+
+      <label for="shiftObjective">Shift objective</label>
+      <input id="shiftObjective" type="text" placeholder="Example: improve follows/1k this week" />
+
+      <label for="voiceRules">Voice rules</label>
+      <textarea id="voiceRules" rows="3">Ambitious, precise, positive, abundance-first. No generic hype. Always include concrete implication.</textarea>
+
+      <div class="grid2">
         <div>
-          <p class="kicker">Impact Command</p>
-          <h2 id="todayTitle">Today</h2>
-          <p id="todaySubtitle">Build high-signal content. Convert attention into followers.</p>
+          <label for="postObjective">Post objective</label>
+          <select id="postObjective">
+            <option value="follow">Get follows</option>
+            <option value="authority">Build authority</option>
+            <option value="discussion">Drive discussion</option>
+          </select>
         </div>
-        <div class="status-stack">
-          <div class="status-pill" id="paceStatus">Pace: waiting for analytics</div>
-          <div class="status-pill muted" id="focusStatus">Focus: Conversion + authority</div>
+        <div>
+          <label for="hookStyle">Hook style</label>
+          <select id="hookStyle">
+            <option value="thesis">Strong thesis</option>
+            <option value="contrarian">Contrarian</option>
+            <option value="prediction">Prediction</option>
+            <option value="question">Question-led</option>
+          </select>
         </div>
-      </header>
+      </div>
 
-      <section class="view active" id="view-dashboard">
-        <div class="grid-3">
-          <article class="metric card">
-            <h3>Impressions / day (28d)</h3>
-            <p class="metric-value mono" id="mImpPerDay">-</p>
-            <p class="metric-delta" id="dImpPerDay">Upload analytics CSV</p>
-          </article>
-          <article class="metric card">
-            <h3>Engagement rate (28d)</h3>
-            <p class="metric-value mono" id="mEngRate">-</p>
-            <p class="metric-delta" id="dEngRate">-</p>
-          </article>
-          <article class="metric card">
-            <h3>Follows / 1k impressions</h3>
-            <p class="metric-value mono" id="mFollow1k">-</p>
-            <p class="metric-delta" id="dFollow1k">-</p>
-          </article>
-        </div>
+      <label for="sourceAccount">Reference account (optional)</label>
+      <select id="sourceAccount"></select>
 
-        <div class="grid-2">
-          <article class="card">
-            <h3>Daily Sprint</h3>
-            <div class="checklist" id="dailyChecklist"></div>
-            <div class="progress-wrap">
-              <div class="progress-bar"><span id="dailyProgressFill"></span></div>
-              <p id="dailyProgressText" class="tiny">0/0 complete</p>
-            </div>
-          </article>
+      <label for="signalInput">Source signal</label>
+      <textarea id="signalInput" rows="3" placeholder="Who said what, where, and why it matters"></textarea>
 
-          <article class="card">
-            <h3>Next Best Actions</h3>
-            <div id="nextActions" class="stack"></div>
-            <button class="btn secondary" id="generatePlan">Generate Today's Plan</button>
-            <textarea id="todayPlan" rows="9" placeholder="Your generated execution plan appears here..."></textarea>
-          </article>
-        </div>
-      </section>
+      <label for="insightInput">Your interpretation</label>
+      <textarea id="insightInput" rows="3" placeholder="What is the key implication for Type2Future audience?"></textarea>
 
-      <section class="view" id="view-strategy">
-        <div class="grid-2">
-          <article class="card">
-            <h3>Identity Core</h3>
-            <label for="northStar">Mission</label>
-            <textarea id="northStar" rows="4">Influence the world toward techno-optimism, abundance, and Kardashev-scale thinking through high-signal daily content on X.</textarea>
-            <label for="audience">Audience</label>
-            <textarea id="audience" rows="4">Builders, founders, researchers, AI + energy + space optimists, and curious high-agency people.</textarea>
-            <label for="positioning">Positioning</label>
-            <textarea id="positioning" rows="4">I translate frontier signals into clear narratives and practical implications for a Type 2 civilization.</textarea>
-            <label for="skillPack">Skill / Knowledge Pack</label>
-            <textarea id="skillPack" rows="6">- Prioritize high-signal long-form posts.
-- Use source signal + interpretation + implication.
-- Optimize for follows per 1k impressions.
-- Voice: bold, precise, abundance-first.
-- Avoid vague hype.</textarea>
-            <button class="btn" id="saveIdentity">Save Strategy Core</button>
-          </article>
+      <label for="closeInput">Close / CTA</label>
+      <textarea id="closeInput" rows="2" placeholder="Question or action that helps conversion"></textarea>
 
-          <article class="card">
-            <h3>Content Architecture</h3>
-            <label for="pillar1">Pillar 1</label>
-            <input id="pillar1" type="text" value="AI capability + agency" />
-            <label for="pillar2">Pillar 2</label>
-            <input id="pillar2" type="text" value="Energy abundance + Kardashev" />
-            <label for="pillar3">Pillar 3</label>
-            <input id="pillar3" type="text" value="Civilization design + incentives" />
-            <label for="pillar4">Pillar 4</label>
-            <input id="pillar4" type="text" value="Practical builder playbooks" />
+      <div class="row">
+        <button class="btn alt" id="genHook">Generate Hook</button>
+        <button class="btn" id="buildDraft">Build Draft</button>
+      </div>
 
-            <h4>Recommended weekly mix</h4>
-            <ul class="flat-list">
-              <li>4 flagship insight posts (long, concrete, distinct)</li>
-              <li>2 question-led posts (high-signal discussion prompts)</li>
-              <li>1 synthesis thread (weekly map of major signals)</li>
-              <li>Daily strategic replies (quality over volume)</li>
-            </ul>
+      <label for="hookOutput">Hook</label>
+      <textarea id="hookOutput" rows="2"></textarea>
 
-            <h4>Do / Don't</h4>
-            <textarea id="rules" rows="6">DO: strong claims, clear implications, practical angle, thought-provoking close.
-DON'T: generic one-liners, contextless hype, reactive spam replies.</textarea>
-          </article>
-        </div>
-      </section>
+      <label for="postDraft">Draft</label>
+      <textarea id="postDraft" rows="10"></textarea>
 
-      <section class="view" id="view-operator">
-        <div class="grid-2">
-          <article class="card">
-            <h3>Operator Handoff</h3>
-            <label for="operatorName">Operator name</label>
-            <input id="operatorName" type="text" placeholder="Name of assigned social media operator" />
-            <label for="operatorShiftObjective">Current shift objective</label>
-            <textarea id="operatorShiftObjective" rows="3" placeholder="Example: Increase follows per 1k impressions this week"></textarea>
-            <label for="operatorConstraints">Non-negotiables</label>
-            <textarea id="operatorConstraints" rows="5">- Protect brand voice: ambitious, precise, positive, abundance-first.
-- No generic hype posts.
-- Every flagship post must include a concrete implication.
-- Escalate sensitive or controversial topics before publishing.</textarea>
-            <button class="btn" id="saveOperatorProfile">Save Handoff Profile</button>
-            <p id="handoffStatus" class="tiny">Save once, then operator can execute daily.</p>
-          </article>
+      <div class="row">
+        <button class="btn alt" id="scoreDraft">Score Draft</button>
+        <button class="btn alt" id="copyDraft">Copy Draft</button>
+      </div>
 
-          <article class="card">
-            <h3>Shift Checklist</h3>
-            <div class="checklist" id="shiftChecklist"></div>
-            <div class="progress-wrap">
-              <div class="progress-bar"><span id="shiftProgressFill"></span></div>
-              <p id="shiftProgressText" class="tiny">0/0 complete</p>
-            </div>
-          </article>
-        </div>
+      <p class="mono" id="draftScore">Score: -</p>
+      <div class="progress"><span id="scoreBar"></span></div>
+      <div id="scoreFeedback" class="stack"></div>
 
-        <div class="grid-2">
-          <article class="card">
-            <h3>Engagement Rules of Engagement</h3>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Scenario</th>
-                    <th>Operator action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>High-quality founder/researcher thread</td><td>Add a value-dense reply with synthesis, then optionally quote with implication.</td></tr>
-                  <tr><td>Low-signal hype trend</td><td>Skip unless a strong Type2Future angle exists.</td></tr>
-                  <tr><td>Direct question from serious account</td><td>Respond in under 2 hours with concrete answer + forward-looking close.</td></tr>
-                  <tr><td>Polarizing political bait</td><td>Do not engage. Escalate if brand risk exists.</td></tr>
-                  <tr><td>Partnership/collab inquiry</td><td>Acknowledge, collect context, add to opportunities log.</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
+      <h3>AI Assist (optional)</h3>
+      <label for="apiKey">OpenAI API key</label>
+      <input id="apiKey" type="password" placeholder="sk-..." />
+      <div class="row">
+        <select id="aiMode">
+          <option value="improve">Improve draft</option>
+          <option value="ideas">Generate 10 ideas</option>
+          <option value="replies">Generate 10 strategic replies</option>
+        </select>
+        <button class="btn" id="runAi">Run AI</button>
+      </div>
+      <textarea id="aiOutput" rows="10" placeholder="AI output"></textarea>
+    </section>
 
-          <article class="card">
-            <h3>Escalation Matrix</h3>
-            <textarea id="escalationRules" rows="9">Escalate to founder before posting if:
-1) Topic is political, legal, regulatory, or can be interpreted as financial advice.
-2) Any claim lacks confidence in source quality.
-3) Post references specific people with critical framing.
-4) External request includes money, sponsorship, or PR risk.
+    <section class="panel" id="intel">
+      <h2>Learn From Winners</h2>
+      <p class="sub">Closest accounts to your style and mission. Study structure, clarity, and conversion patterns.</p>
 
-Escalation package must include:
-- Draft post
-- Source links
-- Risk note (1-2 lines)
-- Recommended action (post / revise / skip)</textarea>
-          </article>
-        </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Why it matters</th>
+              <th>What to learn</th>
+            </tr>
+          </thead>
+          <tbody id="benchmarkBody"></tbody>
+        </table>
+      </div>
 
-        <article class="card">
-          <h3>Arms & Ammunition</h3>
-          <p class="tiny">One-click prompts to speed up operator execution in AI Studio.</p>
-          <div class="seed-grid">
-            <button class="btn secondary prompt-seed" data-seed="Generate 7 high-signal post ideas for today from AI/energy/space signals. For each: hook, implication, close, and who it is for.">Idea Pack</button>
-            <button class="btn secondary prompt-seed" data-seed="Critique this draft ruthlessly for conversion and clarity. Return: score, top 3 fixes, and final rewrite.">Draft Critic</button>
-            <button class="btn secondary prompt-seed" data-seed="Turn this source signal into one flagship post, one supporting post, and 5 strategic replies in Type2Future voice.">Signal Repurposer</button>
-            <button class="btn secondary prompt-seed" data-seed="Create 10 high-value replies to top AI/energy founders today. Must add genuine insight, not praise-only replies.">Reply Sprint</button>
-          </div>
-        </article>
+      <h3>Daily Study Sprint</h3>
+      <button class="btn alt" id="assignStudy">Assign 3 Accounts for Today</button>
+      <div id="studyOutput" class="stack"></div>
 
-        <article class="card">
-          <h3>Daily Operator Report</h3>
-          <div class="grid-2">
-            <div>
-              <label for="shiftWins">Wins</label>
-              <textarea id="shiftWins" rows="3" placeholder="What worked today?"></textarea>
-            </div>
-            <div>
-              <label for="shiftBlockers">Blockers</label>
-              <textarea id="shiftBlockers" rows="3" placeholder="What slowed progress?"></textarea>
-            </div>
-          </div>
-          <div class="grid-2">
-            <div>
-              <label for="shiftOpportunities">Opportunities</label>
-              <textarea id="shiftOpportunities" rows="3" placeholder="New opportunities spotted"></textarea>
-            </div>
-            <div>
-              <label for="shiftNextSteps">Next actions for tomorrow</label>
-              <textarea id="shiftNextSteps" rows="3" placeholder="What should happen next?"></textarea>
-            </div>
-          </div>
-          <div class="btn-row">
-            <button class="btn" id="generateShiftReport">Generate Report</button>
-            <button class="btn secondary" id="copyShiftReport">Copy Report</button>
-          </div>
-          <textarea id="shiftReportOutput" rows="10" placeholder="Daily report appears here"></textarea>
-        </article>
-      </section>
+      <label for="intelNotes">What is working today?</label>
+      <textarea id="intelNotes" rows="8" placeholder="Write specific tactics you want to apply immediately."></textarea>
+      <button class="btn" id="saveIntelNotes">Save Notes</button>
+    </section>
 
-      <section class="view" id="view-intel">
-        <div class="grid-2">
-          <article class="card">
-            <h3>Benchmark Accounts</h3>
-            <p class="tiny">Closest accounts to your mission and style. Study what they do, not just what they say.</p>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Account</th>
-                    <th>Why relevant</th>
-                    <th>What to learn</th>
-                    <th>Do not copy</th>
-                  </tr>
-                </thead>
-                <tbody id="benchmarkBody">
-                  <tr><td colspan="4" class="empty">Loading benchmark intel...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
+    <section class="panel" id="review">
+      <h2>Review Results</h2>
+      <p class="sub">Log each important post. The app identifies winning patterns.</p>
 
-          <article class="card">
-            <h3>Daily Study Sprint</h3>
-            <p class="tiny">Assign 3 accounts each day. Operator extracts tactics and applies immediately.</p>
-            <button class="btn secondary" id="assignStudySprint">Assign Today's Study Sprint</button>
-            <div id="studySprintOutput" class="stack"></div>
-            <label for="intelNotes">Intel notes (operator)</label>
-            <textarea id="intelNotes" rows="9" placeholder="Write what is working in benchmark accounts and how Type2Future should adapt..."></textarea>
-            <button class="btn" id="saveIntelNotes">Save Intel Notes</button>
-          </article>
-        </div>
+      <div class="grid2">
+        <input id="logDate" type="date" />
+        <select id="logFormat">
+          <option value="flagship">Flagship insight</option>
+          <option value="clip">Clip + interpretation</option>
+          <option value="question">Question-led</option>
+          <option value="thread">Thread</option>
+          <option value="quote">Quote post</option>
+          <option value="reply">Reply-led</option>
+        </select>
+      </div>
 
-        <article class="card">
-          <h3>Published Post Review Lab</h3>
-          <p class="tiny">Track every important post manually. This is the engine for understanding what works and improving it.</p>
-          <div class="grid-3 compact">
-            <input id="logDate" type="date" />
-            <select id="logFormat">
-              <option value="flagship">Flagship insight</option>
-              <option value="clip">Clip + interpretation</option>
-              <option value="question">Question-led</option>
-              <option value="thread">Thread</option>
-              <option value="quote">Quote post</option>
-              <option value="reply">Reply-led</option>
-            </select>
-            <select id="logPillar">
-              <option value="AI capability + agency">AI capability + agency</option>
-              <option value="Energy abundance + Kardashev">Energy abundance + Kardashev</option>
-              <option value="Civilization design + incentives">Civilization design + incentives</option>
-              <option value="Practical builder playbooks">Practical builder playbooks</option>
-            </select>
-          </div>
-          <div class="grid-2">
-            <input id="logUrl" type="text" placeholder="Post URL (optional)" />
-            <select id="logSourceAccount"></select>
-          </div>
-          <div class="grid-3 compact">
-            <input id="logImpressions" type="number" min="0" placeholder="Impressions" />
-            <input id="logEngagements" type="number" min="0" placeholder="Engagements" />
-            <input id="logFollows" type="number" min="0" placeholder="Follows" />
-          </div>
-          <div class="grid-2">
-            <input id="logProfileVisits" type="number" min="0" placeholder="Profile visits" />
-            <input id="logNotes" type="text" placeholder="Observation (what worked?)" />
-          </div>
-          <button class="btn secondary" id="addPostLog">Add Post Log</button>
+      <div class="grid2">
+        <select id="logPillar">
+          <option value="AI capability + agency">AI capability + agency</option>
+          <option value="Energy abundance + Kardashev">Energy abundance + Kardashev</option>
+          <option value="Civilization design + incentives">Civilization design + incentives</option>
+          <option value="Practical builder playbooks">Practical builder playbooks</option>
+        </select>
+        <select id="logSourceAccount"></select>
+      </div>
 
-          <div class="grid-2">
-            <div id="postLogInsights" class="stack"></div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Format</th>
-                    <th>Pillar</th>
-                    <th>F/1k</th>
-                    <th>ER%</th>
-                  </tr>
-                </thead>
-                <tbody id="postLogBody">
-                  <tr><td colspan="5" class="empty">No post logs yet.</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </article>
-      </section>
+      <div class="grid3">
+        <input id="logImp" type="number" min="0" placeholder="Impressions" />
+        <input id="logEng" type="number" min="0" placeholder="Engagements" />
+        <input id="logFollows" type="number" min="0" placeholder="Follows" />
+      </div>
 
-      <section class="view" id="view-content">
-        <div class="grid-2">
-          <article class="card">
-            <h3>Signal-to-Post Builder</h3>
-            <label for="postObjective">Post objective</label>
-            <select id="postObjective">
-              <option value="follow">Get follows</option>
-              <option value="discussion">Drive discussion</option>
-              <option value="authority">Build authority</option>
-              <option value="share">Increase shares/reposts</option>
-            </select>
+      <div class="grid2">
+        <input id="logPv" type="number" min="0" placeholder="Profile visits" />
+        <input id="logNote" type="text" placeholder="Observation" />
+      </div>
 
-            <label for="hookStyle">Hook style</label>
-            <select id="hookStyle">
-              <option value="thesis">Strong thesis</option>
-              <option value="contrarian">Contrarian</option>
-              <option value="prediction">Prediction</option>
-              <option value="question">Question-led</option>
-            </select>
+      <button class="btn" id="addPostLog">Add Post Log</button>
 
-            <label for="signalInput">Source signal</label>
-            <textarea id="signalInput" rows="3" placeholder="Example: Demis says X, data point Y, event Z"></textarea>
-            <label for="insightInput">Your interpretation</label>
-            <textarea id="insightInput" rows="3" placeholder="What does this change? Why now?"></textarea>
-            <label for="actionInput">Close / CTA</label>
-            <textarea id="actionInput" rows="2" placeholder="Ask a sharp question or challenge"></textarea>
+      <div id="reviewInsights" class="stack"></div>
 
-            <div class="btn-row">
-              <button class="btn secondary" id="genHook">Generate Hook</button>
-              <button class="btn" id="buildDraft">Build Draft</button>
-            </div>
-
-            <label for="hookOutput">Hook output</label>
-            <textarea id="hookOutput" rows="3"></textarea>
-          </article>
-
-          <article class="card">
-            <h3>Draft + Quality Engine</h3>
-            <textarea id="postDraft" rows="11" placeholder="Draft appears here..."></textarea>
-            <div class="btn-row">
-              <button class="btn secondary" id="scoreDraft">Score Draft</button>
-              <button class="btn secondary" id="copyDraft">Copy Draft</button>
-            </div>
-            <div class="score-shell">
-              <p class="mono score" id="draftScore">Score: -</p>
-              <div class="progress-bar"><span id="scoreFill"></span></div>
-            </div>
-            <div id="scoreFeedback" class="stack"></div>
-          </article>
-        </div>
-      </section>
-
-      <section class="view" id="view-analytics">
-        <div class="grid-2">
-          <article class="card">
-            <h3>Analytics Intake</h3>
-            <div class="btn-row">
-              <input type="file" id="csvFile" accept=".csv" />
-              <button class="btn secondary" id="demoCsv">Use Demo</button>
-            </div>
-            <p class="tiny">Upload X account overview analytics CSV.</p>
-            <div class="insight" id="analyticsSummary">No analytics loaded yet.</div>
-          </article>
-
-          <article class="card">
-            <h3>Growth Diagnostics</h3>
-            <div id="diagnostics" class="stack"></div>
-          </article>
-        </div>
-
-        <article class="card">
-          <h3>Top Days (from uploaded data)</h3>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Impressions</th>
-                  <th>Engagements</th>
-                  <th>New follows</th>
-                  <th>Profile visits</th>
-                </tr>
-              </thead>
-              <tbody id="topDaysBody">
-                <tr><td colspan="5" class="empty">Upload analytics to populate.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
-      </section>
-
-      <section class="view" id="view-calendar">
-        <article class="card">
-          <h3>Weekly Content Planner</h3>
-          <p class="tiny">Use this like a control tower. Plan each slot with purpose.</p>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Day</th>
-                  <th>Morning Slot</th>
-                  <th>Midday Slot</th>
-                  <th>Evening Slot</th>
-                </tr>
-              </thead>
-              <tbody id="weekPlanBody"></tbody>
-            </table>
-          </div>
-          <button class="btn" id="saveWeekPlan">Save Weekly Plan</button>
-        </article>
-      </section>
-
-      <section class="view" id="view-ai">
-        <div class="grid-2">
-          <article class="card">
-            <h3>Agent Controls</h3>
-            <label for="apiKey">OpenAI API key (local browser storage)</label>
-            <input id="apiKey" type="password" placeholder="sk-..." />
-            <label for="modelName">Model</label>
-            <input id="modelName" type="text" value="gpt-4.1-mini" />
-            <label for="agentMode">Mode</label>
-            <select id="agentMode">
-              <option value="operator">Operator shift brief</option>
-              <option value="planner">Daily planner</option>
-              <option value="ideate">Idea generator</option>
-              <option value="draft">Draft writer</option>
-              <option value="critique">Draft critic</option>
-              <option value="repurpose">Repurpose variants</option>
-            </select>
-            <label for="agentInput">Input</label>
-            <textarea id="agentInput" rows="8" placeholder="Topic, constraints, or draft"></textarea>
-            <button class="btn" id="runAgent">Run Agent</button>
-          </article>
-
-          <article class="card">
-            <h3>Agent Output</h3>
-            <textarea id="agentOutput" rows="20" placeholder="AI output appears here..."></textarea>
-          </article>
-        </div>
-      </section>
-
-      <section class="view" id="view-experiments">
-        <article class="card">
-          <h3>Experiment Log</h3>
-          <div class="grid-3 compact">
-            <input id="expHypothesis" type="text" placeholder="Hypothesis" />
-            <input id="expMetric" type="text" placeholder="Metric" />
-            <select id="expOutcome">
-              <option>Win</option>
-              <option>Neutral</option>
-              <option>Lose</option>
-            </select>
-          </div>
-          <input id="expResult" type="text" placeholder="Result summary" />
-          <button class="btn secondary" id="addExperiment">Add Experiment</button>
-          <div id="experimentList" class="stack"></div>
-        </article>
-      </section>
-    </main>
-  </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Format</th>
+              <th>Pillar</th>
+              <th>F/1k</th>
+              <th>ER%</th>
+            </tr>
+          </thead>
+          <tbody id="postLogBody">
+            <tr><td colspan="5" class="tiny">No logs yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 
   <script src="./app.js"></script>
 </body>

@@ -1,48 +1,38 @@
-# Type2 Master Station
+# Type2 Content OS
 
-Professional local growth platform for `@type2future`.
+Mobile-first, minimal growth platform for `@type2future`.
 
-## Core modules
+## Core purpose
 
-- Dashboard command center (daily sprint + next best actions)
-- Goal projection (`current followers -> target`, pace math)
-- Strategy workspace (mission, audience, positioning, pillars, rules)
-- Operator Console (handoff profile, shift checklist, escalation matrix, daily operator report)
-- Growth Intel (benchmark account study sprint + published-post review lab)
-- Content Lab (signal-to-post builder + draft quality scoring)
-- Analytics diagnostics (CSV upload, KPI trends, top days, recommendations)
-- Weekly planning board (3 slots/day)
-- AI Studio (planner, ideation, drafting, critique, repurposing)
-- Experiment tracker
+Help an operator create high-quality content, learn what is working, and improve follower growth continuously.
+
+## Focused modules
+
+- `Today`: KPI diagnostics, daily sprint, next best actions
+- `Create`: signal-to-draft workflow, draft scoring, optional AI assist
+- `Learn`: benchmark accounts + daily study sprint + intel notes
+- `Review`: post log + automatic pattern insights (winning format/pillar/source)
 
 ## Run
 
-Open this file in a browser:
+Open in browser:
 
 `/Users/futurelabstudios/Downloads/type2future marketing/index.html`
 
-No install/build required.
+No install or build step required.
 
-## Analytics CSV format
-
-Expected columns:
+## Analytics CSV expected
 
 - `Date`
 - `Impressions`
-- `Likes`
 - `Engagements`
-- `Bookmarks`
-- `Shares`
 - `New follows`
 - `Unfollows`
-- `Replies`
-- `Reposts`
-- `Profile visits`
-- `Create Post`
 
-Extra columns are ignored.
+The parser also tolerates wider X account overview exports.
 
-## Notes
+## Storage
 
-- All app state is stored in browser local storage.
-- If you use AI Studio, API key is stored locally in browser storage on your machine.
+All state is local browser storage on your machine.
+
+If AI assist is used, API key is also stored in local browser storage.

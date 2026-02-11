@@ -1,252 +1,198 @@
 const STORAGE = {
-  identity: "t2_master_identity",
-  checklist: "t2_master_checklist",
-  shiftChecklist: "t2_master_shift_checklist",
-  operatorProfile: "t2_master_operator_profile",
-  intelNotes: "t2_master_intel_notes",
-  postLogs: "t2_master_post_logs",
-  experiments: "t2_master_experiments",
-  apiKey: "t2_master_api_key",
-  analytics: "t2_master_analytics",
-  weeklyPlan: "t2_master_weekly_plan",
-  settings: "t2_master_settings",
+  analyticsRaw: "t2_min_analytics_raw",
+  checklist: "t2_min_checklist",
+  shiftObjective: "t2_min_shift_objective",
+  voiceRules: "t2_min_voice_rules",
+  intelNotes: "t2_min_intel_notes",
+  postLogs: "t2_min_post_logs",
+  apiKey: "t2_min_api_key",
 };
 
 const DAILY_TASKS = [
-  { id: "d1", text: "Review KPI cockpit and yesterday's top post", weight: 1 },
-  { id: "d2", text: "Capture 3 strong frontier signals", weight: 1 },
-  { id: "d3", text: "Draft 1 flagship post (long, concrete, distinct)", weight: 2 },
-  { id: "d4", text: "Score the draft and revise to 80+", weight: 2 },
-  { id: "d5", text: "Publish in planned slot with clear CTA", weight: 1 },
-  { id: "d6", text: "Leave 8 strategic replies in target network", weight: 1 },
-  { id: "d7", text: "Log one experiment insight", weight: 1 },
+  { id: "t1", text: "Review KPI diagnostics and choose one growth priority" },
+  { id: "t2", text: "Study 3 benchmark accounts and extract one tactic" },
+  { id: "t3", text: "Draft one flagship post and score it 80+" },
+  { id: "t4", text: "Publish with clear conversion close (reason to follow)" },
+  { id: "t5", text: "Log today's post result in Review section" },
 ];
 
-const SHIFT_TASKS = [
-  { id: "s1", text: "Read today's objective and constraints before posting" },
-  { id: "s2", text: "Produce at least 1 flagship draft and score it 80+" },
-  { id: "s3", text: "Publish with a clear follow-conversion close" },
-  { id: "s4", text: "Complete strategic reply sprint (quality-first)" },
-  { id: "s5", text: "Capture one experiment learning and update report" },
-];
+const HOOKS = {
+  thesis: [
+    "Abundance is no longer a fantasy. It is a sequence of solved bottlenecks.",
+    "The Kardashev trajectory is now an execution problem, not a theory problem.",
+    "The biggest shift is not better models. It is better civilization design.",
+  ],
+  contrarian: [
+    "Most people optimize for virality. We should optimize for civilization progress.",
+    "Cheap intelligence does not remove ambition. It multiplies it.",
+    "The new moat is not code. It is taste, speed, and coherent vision.",
+  ],
+  prediction: [
+    "In 24 months, agent-native workflows will be default for high performers.",
+    "By 2030, acceleration mindset will separate winners from spectators.",
+    "Soon, bottleneck removal will matter more than content production itself.",
+  ],
+  question: [
+    "What bottleneck would you remove first to accelerate abundance?",
+    "If intelligence gets cheap, what becomes the new luxury?",
+    "Which institution is least prepared for the next 5 years?",
+  ],
+};
 
-const BENCHMARK_ACCOUNTS = [
+const BENCHMARKS = [
   {
     handle: "lexfridman",
     name: "Lex Fridman",
-    why: "High-trust frontier signal curator referenced in your top-performing posts.",
-    learn: "Use source-backed synthesis and clearly framed implications.",
-    avoid: "Do not mirror long podcast-style cadence; keep your feed sharper and faster.",
-    tags: ["signal", "authority", "longform"],
+    why: "Strong high-trust frontier signal framing, similar to your best-performing pattern.",
+    learn: "Use source + implication structure with clean narrative arc.",
+    tags: ["signal", "authority"],
   },
   {
     handle: "demishassabis",
     name: "Demis Hassabis",
-    why: "Direct connection to AGI frontier and credible scientific narrative.",
-    learn: "Ground posts in concrete breakthroughs and measurable progress.",
-    avoid: "Avoid over-corporate tone; keep your personal thesis voice.",
-    tags: ["signal", "credibility", "science"],
+    why: "Science-backed frontier updates that convert trust into attention.",
+    learn: "Anchor claims in concrete progress and measurable outcomes.",
+    tags: ["signal", "technical"],
   },
   {
     handle: "sama",
     name: "Sam Altman",
-    why: "Strong product update framing and concise momentum signaling.",
-    learn: "Write short updates that still carry strategic implications.",
-    avoid: "Do not rely on insider status cues; add external context for your audience.",
-    tags: ["conversion", "brevity", "product"],
+    why: "Concise momentum posts with strategic implications.",
+    learn: "Short format can still carry authority if implication is clear.",
+    tags: ["conversion", "brevity"],
   },
   {
     handle: "EMostaque",
     name: "Emad",
-    why: "Narrative around open AI, distribution, and memetic founder energy.",
-    learn: "Blend frontier takes with directional bets and ecosystem framing.",
-    avoid: "Avoid posting low-context hype fragments.",
-    tags: ["ecosystem", "narrative", "momentum"],
+    why: "Operator-style future narrative with high builder energy.",
+    learn: "Blend ecosystem insight with directional thesis.",
+    tags: ["ecosystem", "momentum"],
   },
   {
     handle: "garrytan",
     name: "Garry Tan",
-    why: "Builder-focused optimism and practical founder messaging.",
-    learn: "Tie macro optimism to clear founder/operator action.",
-    avoid: "Do not shift into generic startup chatter disconnected from Type2Future.",
-    tags: ["founders", "practical", "conversion"],
+    why: "Practical techno-optimism for founders and builders.",
+    learn: "Translate macro optimism into concrete operator action.",
+    tags: ["founders", "conversion"],
   },
   {
     handle: "nateliason",
     name: "Nat Eliason",
-    why: "High-output builder content and product-led credibility.",
-    learn: "Show proof-of-work and ship updates consistently.",
-    avoid: "Avoid over-indexing on pure product promotion.",
-    tags: ["builder", "shipping", "proof"],
+    why: "High shipping cadence and proof-of-work content.",
+    learn: "Show receipts and practical outputs, not only opinions.",
+    tags: ["builder", "proof"],
   },
   {
     handle: "beffjezos",
     name: "Beff (e/acc)",
-    why: "Very close thematic overlap with Kardashev and acceleration ideology.",
-    learn: "Lean into clear abundance narrative with bold but specific framing.",
-    avoid: "Avoid insider memes without context.",
-    tags: ["kardashev", "acceleration", "culture"],
+    why: "Closest narrative overlap with acceleration and Kardashev framing.",
+    learn: "Use punchy hooks, then add your own clarity layer.",
+    tags: ["kardashev", "hooks", "reach"],
   },
   {
     handle: "_sholtodouglas",
     name: "Sholto Douglas",
-    why: "Strong technical future framing and intelligence-to-abundance arcs.",
-    learn: "Use technically grounded takes with explicit future timelines.",
-    avoid: "Do not become too niche without broader implications.",
-    tags: ["technical", "timeline", "signal"],
+    why: "Technical future framing with strong timeline signals.",
+    learn: "Combine technical depth with broader implication.",
+    tags: ["technical", "signal"],
   },
   {
     handle: "tszzl",
     name: "roon",
-    why: "Strong memetic hooks and audience-pull language.",
-    learn: "Use punchy opening lines that increase scroll-stop rate.",
-    avoid: "Avoid cryptic posting that lowers conversion clarity.",
-    tags: ["hooks", "memetic", "reach"],
+    why: "Strong memetic hooks and attention capture.",
+    learn: "Write better opening lines, then keep your clarity and substance.",
+    tags: ["hooks", "reach"],
   },
   {
     handle: "elonmusk",
     name: "Elon Musk",
-    why: "Core public narrative source for energy, space, and civilization scale.",
-    learn: "Use first-principles framing and high-consequence vision.",
-    avoid: "Do not imitate polarizing cadence; adapt only strategic clarity.",
-    tags: ["vision", "first-principles", "reach"],
+    why: "Core upstream narrative source for energy, space, and scale.",
+    learn: "Lead with first-principles framing and consequence.",
+    tags: ["vision", "first-principles"],
   },
 ];
-
-const HOOK_BANK = {
-  thesis: [
-    "The real race is no longer model-vs-model. It's civilization design-vs-stagnation.",
-    "Abundance is not a dream state. It's an engineering sequence.",
-    "The Kardashev trajectory is becoming a practical roadmap, not a metaphor.",
-  ],
-  contrarian: [
-    "Most people optimize for reach. The real moat is conversion through clarity.",
-    "The future won't be won by louder content. It will be won by sharper synthesis.",
-    "AI won't just automate jobs. It will redefine what a high-impact human can do daily.",
-  ],
-  prediction: [
-    "Within 24 months, agent-native workflows will be default for high performers.",
-    "By 2030, the biggest social divide may be acceleration mindset vs scarcity mindset.",
-    "Soon, your competitive edge will be decision speed, not raw information access.",
-  ],
-  question: [
-    "What is the single bottleneck still holding us back from abundance?",
-    "If intelligence gets cheap, what becomes the new luxury?",
-    "Which institution must be redesigned first for Type 2 progress?",
-  ],
-};
-
-const WEEK_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const el = (id) => document.getElementById(id);
 const qsa = (s) => Array.from(document.querySelectorAll(s));
 
-let analyticsData = [];
-let analyticsKPIs = null;
+let analytics = [];
+let kpi = null;
 
 function init() {
-  initNavigation();
+  bindTabs();
   initChecklist();
-  initShiftChecklist();
-  initIntelConsole();
-  initWeekPlanner();
+  renderBenchmarks();
+  populateSourceSelects();
   bindEvents();
-  loadSavedState();
-  updateTodayHeader();
-  updateGoalProjection();
+  loadSaved();
+  setTodayDate();
+  renderPostLogs();
+  renderActions();
 }
 
-function initNavigation() {
-  qsa(".nav-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      qsa(".nav-btn").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      const view = btn.dataset.view;
-      qsa(".view").forEach((v) => v.classList.remove("active"));
-      el(`view-${view}`).classList.add("active");
+function bindTabs() {
+  qsa(".tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      qsa(".tab").forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      qsa(".panel").forEach((p) => p.classList.remove("active"));
+      el(tab.dataset.target).classList.add("active");
     });
   });
 }
 
-function updateTodayHeader() {
-  const now = new Date();
-  const dateText = now.toLocaleDateString(undefined, {
-    weekday: "long",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-  el("todayTitle").textContent = `Today · ${dateText}`;
-}
-
 function bindEvents() {
-  el("saveIdentity").addEventListener("click", saveIdentity);
-  el("genHook").addEventListener("click", generateHook);
+  el("csvFile").addEventListener("change", onCsvUpload);
+  el("demoCsv").addEventListener("click", loadDemoCsv);
+  el("genHook").addEventListener("click", genHook);
   el("buildDraft").addEventListener("click", buildDraft);
   el("scoreDraft").addEventListener("click", scoreDraft);
   el("copyDraft").addEventListener("click", copyDraft);
-  el("generatePlan").addEventListener("click", generateTodayPlan);
-  el("csvFile").addEventListener("change", onCsvUpload);
-  el("demoCsv").addEventListener("click", loadDemoAnalytics);
-  el("recalcGoal").addEventListener("click", updateGoalProjection);
-  el("saveWeekPlan").addEventListener("click", saveWeekPlan);
-  el("addExperiment").addEventListener("click", addExperiment);
-  el("runAgent").addEventListener("click", runAgent);
-  el("beginnerMode").addEventListener("change", onBeginnerModeChange);
-  el("saveOperatorProfile").addEventListener("click", saveOperatorProfile);
-  el("generateShiftReport").addEventListener("click", generateShiftReport);
-  el("copyShiftReport").addEventListener("click", copyShiftReport);
-  el("assignStudySprint").addEventListener("click", assignStudySprint);
+  el("assignStudy").addEventListener("click", assignStudy);
   el("saveIntelNotes").addEventListener("click", saveIntelNotes);
   el("addPostLog").addEventListener("click", addPostLog);
-  qsa(".prompt-seed").forEach((btn) => btn.addEventListener("click", applyPromptSeed));
+  el("runAi").addEventListener("click", runAi);
+  el("shiftObjective").addEventListener("input", saveOperatorSettings);
+  el("voiceRules").addEventListener("input", saveOperatorSettings);
 }
 
-function loadSavedState() {
-  loadIdentity();
-  loadChecklist();
-  loadShiftChecklist();
-  loadOperatorProfile();
-  loadIntelNotes();
-  loadPostLogs();
-  renderNextActions();
-  loadExperiments();
-  loadApiKey();
-  loadSettings();
-  loadWeekPlan();
-  loadAnalyticsFromStorage();
+function loadSaved() {
+  const rawAnalytics = localStorage.getItem(STORAGE.analyticsRaw);
+  if (rawAnalytics) {
+    try {
+      const parsed = JSON.parse(rawAnalytics);
+      analytics = normalizeAnalytics(parsed);
+      kpi = computeKpi(analytics);
+      renderKpis();
+      renderDiagnostics();
+    } catch {}
+  }
+
+  const rawChecklist = localStorage.getItem(STORAGE.checklist);
+  if (rawChecklist) {
+    try {
+      const state = JSON.parse(rawChecklist);
+      state.forEach((s) => {
+        const box = document.querySelector(`#dailyChecklist input[data-id='${s.id}']`);
+        if (box) box.checked = !!s.checked;
+      });
+    } catch {}
+  }
+  updateChecklistProgress();
+
+  el("shiftObjective").value = localStorage.getItem(STORAGE.shiftObjective) || "";
+  const savedRules = localStorage.getItem(STORAGE.voiceRules);
+  if (savedRules) el("voiceRules").value = savedRules;
+
+  el("intelNotes").value = localStorage.getItem(STORAGE.intelNotes) || "";
+
+  const key = localStorage.getItem(STORAGE.apiKey);
+  if (key) el("apiKey").value = key;
 }
 
-function saveSettings() {
-  const settings = {
-    beginnerMode: el("beginnerMode").checked,
-    currentFollowers: Number(el("currentFollowers").value || 0),
-    targetFollowers: Number(el("targetFollowers").value || 10000),
-    targetDate: el("targetDate").value,
-  };
-  localStorage.setItem(STORAGE.settings, JSON.stringify(settings));
-}
-
-function loadSettings() {
-  const raw = localStorage.getItem(STORAGE.settings);
-  if (!raw) return;
-  try {
-    const settings = JSON.parse(raw);
-    if (typeof settings.beginnerMode === "boolean") el("beginnerMode").checked = settings.beginnerMode;
-    if (settings.currentFollowers) el("currentFollowers").value = settings.currentFollowers;
-    if (settings.targetFollowers) el("targetFollowers").value = settings.targetFollowers;
-    if (settings.targetDate) el("targetDate").value = settings.targetDate;
-    onBeginnerModeChange();
-  } catch {}
-}
-
-function onBeginnerModeChange() {
-  const on = el("beginnerMode").checked;
-  const hint = on
-    ? "Tip: Start in Dashboard and complete the Daily Sprint in order."
-    : "Guided tips hidden."
-  el("beginnerHint").textContent = hint;
-  saveSettings();
+function setTodayDate() {
+  const d = new Date();
+  el("logDate").value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function initChecklist() {
@@ -254,470 +200,31 @@ function initChecklist() {
   wrap.innerHTML = "";
   DAILY_TASKS.forEach((task) => {
     const label = document.createElement("label");
-    label.innerHTML = `<input type=\"checkbox\" data-id=\"${task.id}\" /> ${escapeHtml(task.text)}`;
+    label.innerHTML = `<input type=\"checkbox\" data-id=\"${task.id}\" /> ${escape(task.text)}`;
     wrap.appendChild(label);
   });
 
   qsa("#dailyChecklist input[type='checkbox']").forEach((box) => {
     box.addEventListener("change", () => {
       saveChecklist();
-      renderChecklistProgress();
-      renderNextActions();
+      updateChecklistProgress();
+      renderActions();
     });
   });
-
-  renderChecklistProgress();
 }
 
 function saveChecklist() {
-  const state = qsa("#dailyChecklist input[type='checkbox']").map((box) => ({
-    id: box.dataset.id,
-    checked: box.checked,
-  }));
+  const state = qsa("#dailyChecklist input[type='checkbox']").map((b) => ({ id: b.dataset.id, checked: b.checked }));
   localStorage.setItem(STORAGE.checklist, JSON.stringify(state));
 }
 
-function loadChecklist() {
-  const raw = localStorage.getItem(STORAGE.checklist);
-  if (!raw) return;
-  try {
-    const state = JSON.parse(raw);
-    state.forEach((row) => {
-      const box = document.querySelector(`#dailyChecklist input[data-id='${row.id}']`);
-      if (box) box.checked = !!row.checked;
-    });
-  } catch {}
-  renderChecklistProgress();
-  renderNextActions();
-}
-
-function renderChecklistProgress() {
+function updateChecklistProgress() {
   const boxes = qsa("#dailyChecklist input[type='checkbox']");
   const done = boxes.filter((b) => b.checked).length;
   const total = boxes.length;
   const pct = total ? (done / total) * 100 : 0;
-  el("dailyProgressFill").style.width = `${pct}%`;
+  el("dailyProgress").style.width = `${pct}%`;
   el("dailyProgressText").textContent = `${done}/${total} complete`;
-}
-
-function initShiftChecklist() {
-  const wrap = el("shiftChecklist");
-  if (!wrap) return;
-  wrap.innerHTML = "";
-
-  SHIFT_TASKS.forEach((task) => {
-    const label = document.createElement("label");
-    label.innerHTML = `<input type=\"checkbox\" data-shift-id=\"${task.id}\" /> ${escapeHtml(task.text)}`;
-    wrap.appendChild(label);
-  });
-
-  qsa("#shiftChecklist input[type='checkbox']").forEach((box) => {
-    box.addEventListener("change", () => {
-      saveShiftChecklist();
-      renderShiftChecklistProgress();
-    });
-  });
-
-  renderShiftChecklistProgress();
-}
-
-function saveShiftChecklist() {
-  const state = qsa("#shiftChecklist input[type='checkbox']").map((box) => ({
-    id: box.dataset.shiftId,
-    checked: box.checked,
-  }));
-  localStorage.setItem(STORAGE.shiftChecklist, JSON.stringify(state));
-}
-
-function loadShiftChecklist() {
-  const raw = localStorage.getItem(STORAGE.shiftChecklist);
-  if (!raw) return;
-  try {
-    const state = JSON.parse(raw);
-    state.forEach((row) => {
-      const box = document.querySelector(`#shiftChecklist input[data-shift-id='${row.id}']`);
-      if (box) box.checked = !!row.checked;
-    });
-  } catch {}
-  renderShiftChecklistProgress();
-}
-
-function renderShiftChecklistProgress() {
-  const boxes = qsa("#shiftChecklist input[type='checkbox']");
-  if (!boxes.length) return;
-  const done = boxes.filter((b) => b.checked).length;
-  const total = boxes.length;
-  const pct = total ? (done / total) * 100 : 0;
-  el("shiftProgressFill").style.width = `${pct}%`;
-  el("shiftProgressText").textContent = `${done}/${total} complete`;
-}
-
-function initIntelConsole() {
-  renderBenchmarkAccounts();
-  populateSourceAccountSelect();
-  const d = new Date();
-  el("logDate").value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function renderBenchmarkAccounts() {
-  const body = el("benchmarkBody");
-  body.innerHTML = "";
-  BENCHMARK_ACCOUNTS.forEach((a) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><a href="https://x.com/${a.handle}" target="_blank" rel="noreferrer">@${a.handle}</a><br/><span class="tiny">${escapeHtml(a.name)}</span></td>
-      <td>${escapeHtml(a.why)}</td>
-      <td>${escapeHtml(a.learn)}</td>
-      <td>${escapeHtml(a.avoid)}</td>
-    `;
-    body.appendChild(tr);
-  });
-}
-
-function populateSourceAccountSelect() {
-  const sel = el("logSourceAccount");
-  sel.innerHTML = "<option value=\"\">Source account (optional)</option>";
-  BENCHMARK_ACCOUNTS.forEach((a) => {
-    const opt = document.createElement("option");
-    opt.value = a.handle;
-    opt.textContent = `@${a.handle} (${a.name})`;
-    sel.appendChild(opt);
-  });
-}
-
-function getStudyCandidates() {
-  if (!analyticsKPIs) return BENCHMARK_ACCOUNTS;
-  if (analyticsKPIs.followPer1k < 1) return BENCHMARK_ACCOUNTS.filter((a) => a.tags.includes("conversion") || a.tags.includes("hooks"));
-  if (analyticsKPIs.engRate < 2.2) return BENCHMARK_ACCOUNTS.filter((a) => a.tags.includes("signal") || a.tags.includes("longform"));
-  return BENCHMARK_ACCOUNTS.filter((a) => a.tags.includes("vision") || a.tags.includes("builder") || a.tags.includes("technical"));
-}
-
-function assignStudySprint() {
-  const pool = getStudyCandidates();
-  const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
-  const wrap = el("studySprintOutput");
-  wrap.innerHTML = shuffled
-    .map((a, i) => `<div class="item"><strong>Slot ${i + 1}: @${a.handle}</strong><br/>Study target: ${escapeHtml(a.learn)}<br/>Deliverable: 1 tactic to apply in today’s flagship post.</div>`)
-    .join("");
-}
-
-function saveIntelNotes() {
-  localStorage.setItem(STORAGE.intelNotes, el("intelNotes").value);
-}
-
-function loadIntelNotes() {
-  const raw = localStorage.getItem(STORAGE.intelNotes);
-  if (raw) el("intelNotes").value = raw;
-}
-
-function getPostLogs() {
-  const raw = localStorage.getItem(STORAGE.postLogs);
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
-}
-
-function loadPostLogs() {
-  renderPostLogs();
-}
-
-function addPostLog() {
-  const row = {
-    date: el("logDate").value || new Date().toISOString().slice(0, 10),
-    format: el("logFormat").value,
-    pillar: el("logPillar").value,
-    source: el("logSourceAccount").value,
-    url: el("logUrl").value.trim(),
-    impressions: Number(el("logImpressions").value || 0),
-    engagements: Number(el("logEngagements").value || 0),
-    follows: Number(el("logFollows").value || 0),
-    profileVisits: Number(el("logProfileVisits").value || 0),
-    notes: el("logNotes").value.trim(),
-    createdAt: Date.now(),
-  };
-  if (!row.impressions || !row.engagements) return;
-  const logs = getPostLogs();
-  logs.push(row);
-  localStorage.setItem(STORAGE.postLogs, JSON.stringify(logs));
-  renderPostLogs();
-  el("logUrl").value = "";
-  el("logImpressions").value = "";
-  el("logEngagements").value = "";
-  el("logFollows").value = "";
-  el("logProfileVisits").value = "";
-  el("logNotes").value = "";
-}
-
-function renderPostLogs() {
-  const logs = getPostLogs();
-  const body = el("postLogBody");
-  if (!body) return;
-  body.innerHTML = "";
-  if (!logs.length) {
-    body.innerHTML = `<tr><td colspan="5" class="empty">No post logs yet.</td></tr>`;
-    renderPostLogInsights([]);
-    return;
-  }
-
-  const sorted = [...logs].sort((a, b) => b.createdAt - a.createdAt);
-  sorted.slice(0, 20).forEach((r) => {
-    const f1k = r.impressions ? (r.follows / r.impressions) * 1000 : 0;
-    const er = r.impressions ? (r.engagements / r.impressions) * 100 : 0;
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${escapeHtml(r.date)}</td>
-      <td>${escapeHtml(r.format)}</td>
-      <td>${escapeHtml(r.pillar)}</td>
-      <td>${f1k.toFixed(2)}</td>
-      <td>${er.toFixed(2)}</td>
-    `;
-    body.appendChild(tr);
-  });
-
-  renderPostLogInsights(logs);
-}
-
-function renderPostLogInsights(logs) {
-  const wrap = el("postLogInsights");
-  if (!wrap) return;
-  if (!logs.length) {
-    wrap.innerHTML = `<div class="item">Log at least 5 posts to unlock pattern insights.</div>`;
-    return;
-  }
-
-  const byFormat = {};
-  const byPillar = {};
-  const bySource = {};
-  logs.forEach((r) => {
-    const f1k = r.impressions ? (r.follows / r.impressions) * 1000 : 0;
-    const er = r.impressions ? (r.engagements / r.impressions) * 100 : 0;
-    (byFormat[r.format] ||= []).push({ f1k, er });
-    (byPillar[r.pillar] ||= []).push({ f1k, er });
-    if (r.source) (bySource[r.source] ||= []).push({ f1k, er });
-  });
-
-  const bestFormat = topByMetric(byFormat, "f1k");
-  const bestPillar = topByMetric(byPillar, "er");
-  const bestSource = topByMetric(bySource, "f1k");
-
-  wrap.innerHTML = `
-    <div class="item"><strong>Best format (follows/1k):</strong> ${bestFormat?.key || "-"} (${bestFormat ? bestFormat.value.toFixed(2) : "-"})</div>
-    <div class="item"><strong>Best pillar (engagement rate):</strong> ${bestPillar?.key || "-"} (${bestPillar ? bestPillar.value.toFixed(2) : "-"}%)</div>
-    <div class="item"><strong>Best source account lift:</strong> ${bestSource?.key ? "@" + bestSource.key : "-"} (${bestSource ? bestSource.value.toFixed(2) : "-"} f/1k)</div>
-    <div class="item"><strong>Action:</strong> Double-down next 3 posts on the current winning format + pillar combo.</div>
-  `;
-}
-
-function groupBy(logs, key) {
-  const out = {};
-  logs.forEach((r) => {
-    const k = r[key];
-    if (!k) return;
-    const f1k = r.impressions ? (r.follows / r.impressions) * 1000 : 0;
-    const er = r.impressions ? (r.engagements / r.impressions) * 100 : 0;
-    (out[k] ||= []).push({ f1k, er });
-  });
-  return out;
-}
-
-function topByMetric(grouped, metric) {
-  const rows = Object.entries(grouped).map(([key, arr]) => {
-    const avg = arr.reduce((a, b) => a + b[metric], 0) / arr.length;
-    return { key, value: avg };
-  });
-  if (!rows.length) return null;
-  rows.sort((a, b) => b.value - a.value);
-  return rows[0];
-}
-
-function saveIdentity() {
-  const payload = {
-    northStar: el("northStar").value,
-    audience: el("audience").value,
-    positioning: el("positioning").value,
-    skillPack: el("skillPack").value,
-    pillars: [el("pillar1").value, el("pillar2").value, el("pillar3").value, el("pillar4").value],
-    rules: el("rules").value,
-  };
-  localStorage.setItem(STORAGE.identity, JSON.stringify(payload));
-}
-
-function loadIdentity() {
-  const raw = localStorage.getItem(STORAGE.identity);
-  if (!raw) return;
-  try {
-    const d = JSON.parse(raw);
-    if (d.northStar) el("northStar").value = d.northStar;
-    if (d.audience) el("audience").value = d.audience;
-    if (d.positioning) el("positioning").value = d.positioning;
-    if (d.skillPack) el("skillPack").value = d.skillPack;
-    if (Array.isArray(d.pillars)) {
-      [el("pillar1"), el("pillar2"), el("pillar3"), el("pillar4")].forEach((x, i) => {
-        if (d.pillars[i]) x.value = d.pillars[i];
-      });
-    }
-    if (d.rules) el("rules").value = d.rules;
-  } catch {}
-}
-
-function saveOperatorProfile() {
-  const payload = {
-    operatorName: el("operatorName").value.trim(),
-    shiftObjective: el("operatorShiftObjective").value.trim(),
-    constraints: el("operatorConstraints").value,
-    escalationRules: el("escalationRules").value,
-  };
-  localStorage.setItem(STORAGE.operatorProfile, JSON.stringify(payload));
-  el("handoffStatus").textContent = "Handoff profile saved.";
-  renderNextActions();
-}
-
-function loadOperatorProfile() {
-  const raw = localStorage.getItem(STORAGE.operatorProfile);
-  if (!raw) return;
-  try {
-    const d = JSON.parse(raw);
-    if (d.operatorName) el("operatorName").value = d.operatorName;
-    if (d.shiftObjective) el("operatorShiftObjective").value = d.shiftObjective;
-    if (d.constraints) el("operatorConstraints").value = d.constraints;
-    if (d.escalationRules) el("escalationRules").value = d.escalationRules;
-  } catch {}
-}
-
-function generateHook() {
-  const style = el("hookStyle").value;
-  const objective = el("postObjective").value;
-  const bank = HOOK_BANK[style] || HOOK_BANK.thesis;
-  const raw = bank[Math.floor(Math.random() * bank.length)];
-
-  const suffix = {
-    follow: " Follow if you're building for the long future.",
-    discussion: " What's your take?",
-    authority: " Here's the practical implication most people miss.",
-    share: " If this resonates, repost for your builder network.",
-  }[objective] || "";
-
-  el("hookOutput").value = raw + suffix;
-}
-
-function buildDraft() {
-  const hook = (el("hookOutput").value || "").trim();
-  const signal = (el("signalInput").value || "").trim();
-  const insight = (el("insightInput").value || "").trim();
-  const close = (el("actionInput").value || "").trim();
-
-  const draft = [
-    hook || "The acceleration window is open. Most people still don't see it.",
-    "",
-    signal ? `Signal: ${signal}` : "Signal: [insert concrete event, quote, or data point]",
-    insight ? `Implication: ${insight}` : "Implication: [what this changes in the next 12-24 months]",
-    "",
-    close || "What bottleneck do we remove next to accelerate abundance?",
-  ].join("\n");
-
-  el("postDraft").value = draft;
-}
-
-function scoreDraft() {
-  const text = (el("postDraft").value || "").trim();
-  const feedback = [];
-  let score = 0;
-
-  if (!text) {
-    el("draftScore").textContent = "Score: 0 / 100";
-    el("scoreFill").style.width = "0%";
-    el("scoreFeedback").innerHTML = `<div class=\"item\">Draft is empty. Build or paste a draft first.</div>`;
-    return;
-  }
-
-  const len = text.length;
-  const lines = text.split(/\n+/).filter(Boolean).length;
-  const hasQuestion = /\?$/.test(text.trim()) || /\?/.test(text);
-  const hasNumber = /\d/.test(text);
-  const hasSignalWord = /(signal|data|quote|study|report|says|according)/i.test(text);
-  const hasImplicationWord = /(implication|means|therefore|so|this changes|this suggests)/i.test(text);
-  const hypeCount = (text.match(/\b(lfg|insane|crazy|wild|legend|moon)\b/gi) || []).length;
-  const pillarWords = [el("pillar1").value, el("pillar2").value, el("pillar3").value, el("pillar4").value]
-    .join(" ")
-    .toLowerCase();
-  const hasPillarMatch = pillarWords.split(/\W+/).filter((w) => w.length > 4).some((w) => text.toLowerCase().includes(w));
-
-  if (len >= 140 && len <= 420) {
-    score += 20;
-    feedback.push("Length is in high-performing range.");
-  } else if (len > 90) {
-    score += 12;
-    feedback.push("Length is okay, but could be tighter or more complete.");
-  } else {
-    score += 5;
-    feedback.push("Draft is short; add context and implication.");
-  }
-
-  if (lines >= 4) {
-    score += 14;
-    feedback.push("Structure is scannable (multi-line)." );
-  } else {
-    score += 6;
-    feedback.push("Add line breaks to improve readability.");
-  }
-
-  if (hasSignalWord || hasNumber) {
-    score += 16;
-    feedback.push("Includes concrete signal/evidence cues.");
-  } else {
-    feedback.push("Add concrete source signal or number.");
-  }
-
-  if (hasImplicationWord) {
-    score += 16;
-    feedback.push("States implication clearly.");
-  } else {
-    feedback.push("Explicitly state why this matters now.");
-  }
-
-  if (hasQuestion) {
-    score += 12;
-    feedback.push("Has discussion-driving close.");
-  } else {
-    feedback.push("End with a sharp CTA or question.");
-  }
-
-  if (hasPillarMatch) {
-    score += 12;
-    feedback.push("Aligned with your strategic content pillars.");
-  } else {
-    feedback.push("Tie this draft to one core pillar.");
-  }
-
-  if (hypeCount === 0) {
-    score += 10;
-  } else if (hypeCount === 1) {
-    score += 6;
-    feedback.push("Slightly hypey tone; keep precision high.");
-  } else {
-    score -= 6;
-    feedback.push("Too much hype language; reduce generic buzzwords.");
-  }
-
-  score = Math.max(0, Math.min(100, score));
-  const grade = score >= 85 ? "A" : score >= 75 ? "B" : score >= 60 ? "C" : "D";
-  el("draftScore").textContent = `Score: ${score} / 100 (${grade})`;
-  el("scoreFill").style.width = `${score}%`;
-  el("scoreFeedback").innerHTML = feedback.map((f) => `<div class=\"item\">${escapeHtml(f)}</div>`).join("");
-}
-
-async function copyDraft() {
-  const text = el("postDraft").value || "";
-  if (!text) return;
-  try {
-    await navigator.clipboard.writeText(text);
-    el("scoreFeedback").innerHTML = `<div class=\"item\">Draft copied to clipboard.</div>`;
-  } catch {
-    el("scoreFeedback").innerHTML = `<div class=\"item\">Could not access clipboard. Copy manually.</div>`;
-  }
 }
 
 function parseCSV(text) {
@@ -735,7 +242,6 @@ function parseCSV(text) {
     });
     rows.push(row);
   }
-
   return rows;
 }
 
@@ -766,23 +272,18 @@ function splitCSVLine(line) {
   return out;
 }
 
-function parseDateSafe(s) {
-  const native = new Date(s);
-  if (!Number.isNaN(native.getTime())) return native;
-
-  const m = String(s).match(/^\w{3},\s(\w{3})\s(\d{1,2}),\s(\d{4})$/);
+function parseDateSafe(value) {
+  const d = new Date(value);
+  if (!Number.isNaN(d.getTime())) return d;
+  const m = String(value).match(/^\w{3},\s(\w{3})\s(\d{1,2}),\s(\d{4})$/);
   if (!m) return null;
-  const monthMap = {
-    Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
-    Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
-  };
-  const month = monthMap[m[1]];
-  if (month === undefined) return null;
-  return new Date(Number(m[3]), month, Number(m[2]));
+  const months = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+  if (months[m[1]] === undefined) return null;
+  return new Date(Number(m[3]), months[m[1]], Number(m[2]));
 }
 
-function normalizeAnalytics(rawRows) {
-  return rawRows
+function normalizeAnalytics(rows) {
+  return rows
     .map((r) => {
       const date = parseDateSafe(r.Date);
       if (!date) return null;
@@ -790,14 +291,8 @@ function normalizeAnalytics(rawRows) {
         date,
         impressions: Number(r.Impressions || 0),
         engagements: Number(r.Engagements || 0),
-        likes: Number(r.Likes || 0),
         newFollows: Number(r["New follows"] || 0),
         unfollows: Number(r.Unfollows || 0),
-        profileVisits: Number(r["Profile visits"] || 0),
-        bookmarks: Number(r.Bookmarks || 0),
-        replies: Number(r.Replies || 0),
-        reposts: Number(r.Reposts || 0),
-        createPost: Number(r["Create Post"] || 0),
       };
     })
     .filter(Boolean)
@@ -805,456 +300,364 @@ function normalizeAnalytics(rawRows) {
 }
 
 function sum(arr, key) {
-  return arr.reduce((acc, r) => acc + (r[key] || 0), 0);
+  return arr.reduce((acc, x) => acc + (x[key] || 0), 0);
 }
 
-function avg(arr, key) {
-  return arr.length ? sum(arr, key) / arr.length : 0;
-}
-
-function computeKPIs(data) {
+function computeKpi(data) {
   if (!data.length) return null;
+  const last = data.slice(-28);
+  const prev = data.slice(-56, -28);
 
-  const last28 = data.slice(-28);
-  const prev28 = data.slice(-56, -28);
+  const imp = sum(last, "impressions");
+  const eng = sum(last, "engagements");
+  const follows = sum(last, "newFollows");
 
-  const imp = sum(last28, "impressions");
-  const eng = sum(last28, "engagements");
-  const follows = sum(last28, "newFollows");
-  const unfollows = sum(last28, "unfollows");
-  const pv = sum(last28, "profileVisits");
-  const posts = sum(last28, "createPost");
+  const pImp = sum(prev, "impressions");
+  const pEng = sum(prev, "engagements");
+  const pFollows = sum(prev, "newFollows");
 
-  const pImp = sum(prev28, "impressions");
-  const pEng = sum(prev28, "engagements");
-  const pFollows = sum(prev28, "newFollows");
-
-  const kpi = {
-    impPerDay: imp / last28.length,
-    engRate: imp ? (eng / imp) * 100 : 0,
-    followsPerDay: follows / last28.length,
-    followPer1k: imp ? (follows / imp) * 1000 : 0,
-    netFollowPerDay: (follows - unfollows) / last28.length,
-    pvPerDay: pv / last28.length,
-    postsPerDay: posts / last28.length,
-    deltaImp: pImp ? ((imp - pImp) / pImp) * 100 : 0,
-    deltaEngRate: pImp ? ((eng / imp) * 100 - (pEng / pImp) * 100) : 0,
-    deltaFollow1k: pImp ? (follows / imp) * 1000 - (pFollows / pImp) * 1000 : 0,
+  return {
+    impPerDay: imp / last.length,
+    er: imp ? (eng / imp) * 100 : 0,
+    f1k: imp ? (follows / imp) * 1000 : 0,
+    dImp: pImp ? ((imp - pImp) / pImp) * 100 : 0,
+    dEr: pImp ? ((eng / imp) * 100 - (pEng / pImp) * 100) : 0,
+    dF1k: pImp ? (follows / imp) * 1000 - (pFollows / pImp) * 1000 : 0,
   };
-
-  return kpi;
 }
 
-function renderAnalytics(kpi, data) {
+function renderKpis() {
   if (!kpi) return;
-  analyticsKPIs = kpi;
-
-  el("mImpPerDay").textContent = formatNum(kpi.impPerDay, 0);
-  el("mEngRate").textContent = `${kpi.engRate.toFixed(2)}%`;
-  el("mFollow1k").textContent = kpi.followPer1k.toFixed(2);
-
-  el("dImpPerDay").textContent = `${signed(kpi.deltaImp)} vs previous 28d`;
-  el("dEngRate").textContent = `${signed(kpi.deltaEngRate)} pp vs previous 28d`;
-  el("dFollow1k").textContent = `${signed(kpi.deltaFollow1k)} vs previous 28d`;
-
-  const summary = [
-    `Window: last 28 days`,
-    `Posts/day: ${kpi.postsPerDay.toFixed(2)}`,
-    `Follows/day: ${kpi.followsPerDay.toFixed(2)} | Net/day: ${kpi.netFollowPerDay.toFixed(2)}`,
-    `Profile visits/day: ${kpi.pvPerDay.toFixed(2)}`,
-  ].join("\n");
-  el("analyticsSummary").textContent = summary;
-
-  renderDiagnostics(kpi);
-  renderTopDays(data);
-  renderNextActions();
-  updateGoalProjection();
+  el("mImp").textContent = num(kpi.impPerDay, 0);
+  el("mEr").textContent = `${kpi.er.toFixed(2)}%`;
+  el("mF1k").textContent = kpi.f1k.toFixed(2);
 }
 
-function renderTopDays(data) {
-  const top = [...data].sort((a, b) => b.impressions - a.impressions).slice(0, 10);
-  const body = el("topDaysBody");
-  body.innerHTML = "";
-  if (!top.length) {
-    body.innerHTML = `<tr><td colspan=\"5\" class=\"empty\">No data</td></tr>`;
-    return;
-  }
-
-  top.forEach((r) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${r.date.toLocaleDateString()}</td>
-      <td>${formatNum(r.impressions, 0)}</td>
-      <td>${formatNum(r.engagements, 0)}</td>
-      <td>${formatNum(r.newFollows, 0)}</td>
-      <td>${formatNum(r.profileVisits, 0)}</td>
-    `;
-    body.appendChild(tr);
-  });
-}
-
-function renderDiagnostics(kpi) {
-  const out = [];
-  let focus = "Focus: Conversion + authority";
-  if (kpi.followPer1k < 1) {
-    out.push("Conversion is weak relative to reach. Add clearer audience promise + follow CTA in flagship posts.");
-    focus = "Focus: Tighten conversion";
-  } else if (kpi.followPer1k < 1.8) {
-    out.push("Conversion is moderate. Improve closing CTA and profile positioning.");
-    focus = "Focus: Sharpen positioning";
-  } else {
-    out.push("Conversion is strong. Scale distribution while keeping content quality high.");
-    focus = "Focus: Scale reach";
-  }
-
-  if (kpi.engRate < 2.2) {
-    out.push("Engagement rate is soft. Use stronger claims, concrete implications, and less generic phrasing.");
-    focus = "Focus: Raise engagement quality";
-  }
-
-  if (kpi.postsPerDay < 1) {
-    out.push("Posting cadence is low. Target minimum 1 high-context post per day.");
-  } else if (kpi.postsPerDay > 3 && kpi.followPer1k < 1.2) {
-    out.push("High volume, low conversion. Reduce volume and raise post depth.");
-  }
-
-  if (kpi.deltaImp > 20 && kpi.deltaFollow1k < 0) {
-    out.push("Impressions are rising but conversion is dropping. Optimize profile + post positioning.");
-  }
-
+function renderDiagnostics() {
   const wrap = el("diagnostics");
-  wrap.innerHTML = out.map((line) => `<div class=\"item\">${escapeHtml(line)}</div>`).join("");
+  if (!kpi) {
+    wrap.innerHTML = `<div>Upload analytics CSV to unlock smart diagnostics.</div>`;
+    return;
+  }
 
-  const paceText = kpi.followPer1k >= 1.8 ? "Pace: Efficient Growth" : "Pace: Distribution > Conversion";
-  el("paceStatus").textContent = paceText;
-  el("focusStatus").textContent = focus;
+  const lines = [];
+  lines.push(`Impressions trend: ${signed(kpi.dImp)}% vs previous 28 days.`);
+  lines.push(`Engagement rate trend: ${signed(kpi.dEr)}pp.`);
+  lines.push(`Follow conversion trend: ${signed(kpi.dF1k)} follows per 1k impressions.`);
+
+  if (kpi.f1k < 1) {
+    lines.push("Priority: conversion is weak. Use clearer value proposition and direct follow close in every flagship post.");
+  }
+  if (kpi.er < 2.2) {
+    lines.push("Priority: engagement is soft. Add stronger claim + concrete signal + explicit implication.");
+  }
+
+  wrap.innerHTML = lines.map((x) => `<div>${escape(x)}</div>`).join("");
 }
 
-function getActionItems() {
-  const boxes = qsa("#dailyChecklist input[type='checkbox']");
-  const pending = boxes.filter((b) => !b.checked).slice(0, 3).map((b) => {
-    const task = DAILY_TASKS.find((t) => t.id === b.dataset.id);
-    return task ? task.text : "Complete pending daily task";
-  });
-
-  const items = [...pending];
-  if (!el("operatorName").value.trim()) items.push("Set operator handoff profile in Operator Console.");
-  if (!el("operatorShiftObjective").value.trim()) items.push("Define the current shift objective for the operator.");
-  const logs = getPostLogs();
-  if (logs.length < 5) items.push("Log at least 5 published posts in Growth Intel > Review Lab.");
-  if (logs.length >= 5) {
-    const bestFormat = topByMetric(groupBy(logs, "format"), "f1k");
-    if (bestFormat) items.push(`Prioritize '${bestFormat.key}' format today (best follow conversion in your logs).`);
-  }
-  if (analyticsKPIs) {
-    if (analyticsKPIs.followPer1k < 1) items.push("Rewrite post closes to include explicit reason-to-follow.");
-    if (analyticsKPIs.engRate < 2.2) items.push("Use one stronger claim with a concrete number or source in today’s flagship post.");
-    if (analyticsKPIs.postsPerDay < 1) items.push("Publish at least one flagship post today.");
-  }
-  return items.slice(0, 5);
-}
-
-function renderNextActions() {
+function renderActions() {
   const wrap = el("nextActions");
-  const items = getActionItems();
+  const items = [];
+
+  if (!kpi) items.push("Upload analytics in Today section first.");
+  if (kpi && kpi.f1k < 1) items.push("In today's flagship post, add explicit reason to follow this account.");
+  if (kpi && kpi.er < 2.2) items.push("Use one concrete source signal and one sharp implication.");
+
+  const logs = getPostLogs();
+  if (logs.length < 5) items.push("Log at least 5 published posts in Review to identify winning patterns.");
+  if (!el("shiftObjective").value.trim()) items.push("Set a clear shift objective in Create section.");
+
+  const boxes = qsa("#dailyChecklist input[type='checkbox']");
+  const pending = boxes.filter((b) => !b.checked).slice(0, 2).map((b) => {
+    const task = DAILY_TASKS.find((t) => t.id === b.dataset.id);
+    return task ? task.text : "Finish daily sprint";
+  });
+  items.push(...pending);
+
   wrap.innerHTML = items.length
-    ? items.map((line) => `<div class=\"item\">${escapeHtml(line)}</div>`).join("")
-    : `<div class=\"item\">All key actions complete. Run a new experiment.</div>`;
+    ? items.slice(0, 6).map((x) => `<div>${escape(x)}</div>`).join("")
+    : `<div>All critical actions complete. Execute and review results.</div>`;
 }
 
-function generateTodayPlan() {
-  const actions = getActionItems();
-  const pillars = [el("pillar1").value, el("pillar2").value, el("pillar3").value, el("pillar4").value].filter(Boolean);
-  const objective = analyticsKPIs && analyticsKPIs.followPer1k < 1 ? "improve conversion" : "increase reach with quality";
+function genHook() {
+  const style = el("hookStyle").value;
+  const objective = el("postObjective").value;
+  const bank = HOOKS[style] || HOOKS.thesis;
+  const base = bank[Math.floor(Math.random() * bank.length)];
+  const suffix = {
+    follow: " Follow for high-signal Type 2 future intelligence.",
+    authority: " Here is the practical implication.",
+    discussion: " What do you think changes first?",
+  }[objective] || "";
+  el("hookOutput").value = base + suffix;
+}
 
-  const plan = [
-    `Primary objective: ${objective}`,
+function buildDraft() {
+  const hook = el("hookOutput").value.trim() || "The acceleration window is open, but most people still miss the implication.";
+  const sourceAccount = el("sourceAccount").value;
+  const signal = el("signalInput").value.trim();
+  const insight = el("insightInput").value.trim();
+  const close = el("closeInput").value.trim() || "If this resonates, follow for daily frontier signal synthesis.";
+
+  const src = sourceAccount ? `Source context: @${sourceAccount}` : "Source context: [optional account/event]";
+  const draft = [
+    hook,
     "",
-    "Execution blocks:",
-    "1) Research (20 min): Capture 3 fresh signals aligned to one pillar.",
-    `2) Draft (30 min): Write flagship post in pillar '${pillars[0] || "core pillar"}'.`,
-    "3) Optimize (10 min): Run draft score, revise to 80+.",
-    "4) Publish + engage (30 min): Publish, then leave 8 strategic replies.",
-    "5) Learn (10 min): Log result and one lesson in experiment tracker.",
+    src,
+    signal ? `Signal: ${signal}` : "Signal: [insert concrete event, quote, or data point]",
+    insight ? `Implication: ${insight}` : "Implication: [what this changes in practical terms]",
     "",
-    "Top priorities today:",
-    ...actions.map((a, i) => `${i + 1}. ${a}`),
+    close,
   ].join("\n");
 
-  el("todayPlan").value = plan;
+  el("postDraft").value = draft;
 }
 
-function applyPromptSeed(event) {
-  const seed = event.currentTarget.dataset.seed || "";
-  el("agentInput").value = seed;
-  qsa(".nav-btn").forEach((b) => b.classList.remove("active"));
-  const aiBtn = qsa(".nav-btn").find((b) => b.dataset.view === "ai");
-  if (aiBtn) aiBtn.classList.add("active");
-  qsa(".view").forEach((v) => v.classList.remove("active"));
-  el("view-ai").classList.add("active");
+function scoreDraft() {
+  const text = el("postDraft").value.trim();
+  const wrap = el("scoreFeedback");
+
+  if (!text) {
+    el("draftScore").textContent = "Score: 0 / 100";
+    el("scoreBar").style.width = "0%";
+    wrap.innerHTML = "<div>Draft is empty.</div>";
+    return;
+  }
+
+  let score = 0;
+  const notes = [];
+
+  const len = text.length;
+  const lines = text.split(/\n+/).filter(Boolean).length;
+  const hasNumber = /\d/.test(text);
+  const hasSignal = /(signal|data|study|report|says|according|source)/i.test(text);
+  const hasImplication = /(implication|means|therefore|this changes|so what|result)/i.test(text);
+  const hasQuestion = /\?/.test(text);
+  const hasFollowCta = /follow/i.test(text);
+  const hype = (text.match(/\b(lfg|insane|crazy|legend|wild|moon)\b/gi) || []).length;
+
+  if (len >= 130 && len <= 420) { score += 22; notes.push("Good length for depth + readability."); }
+  else if (len >= 90) { score += 12; notes.push("Length is acceptable; consider tighter structure."); }
+  else { score += 4; notes.push("Too short for high-context conversion."); }
+
+  if (lines >= 4) { score += 14; notes.push("Readable multi-line structure."); }
+  else { score += 5; notes.push("Add line breaks for scanability."); }
+
+  if (hasNumber || hasSignal) { score += 16; notes.push("Concrete source signal detected."); }
+  else { notes.push("Add concrete source signal or number."); }
+
+  if (hasImplication) { score += 18; notes.push("Strong implication language."); }
+  else { notes.push("State implication explicitly."); }
+
+  if (hasQuestion) { score += 10; notes.push("Discussion trigger present."); }
+  if (hasFollowCta) { score += 10; notes.push("Follow conversion CTA present."); }
+  else { notes.push("Add explicit reason-to-follow close."); }
+
+  if (hype === 0) score += 10;
+  else if (hype === 1) score += 5;
+  else { score -= 8; notes.push("Reduce hype words; keep precision high."); }
+
+  score = Math.max(0, Math.min(100, score));
+  el("draftScore").textContent = `Score: ${score} / 100`;
+  el("scoreBar").style.width = `${score}%`;
+  wrap.innerHTML = notes.map((n) => `<div>${escape(n)}</div>`).join("");
 }
 
-function generateShiftReport() {
-  const operatorName = el("operatorName").value.trim() || "Operator";
-  const objective = el("operatorShiftObjective").value.trim() || "No objective set";
-  const wins = el("shiftWins").value.trim() || "-";
-  const blockers = el("shiftBlockers").value.trim() || "-";
-  const opportunities = el("shiftOpportunities").value.trim() || "-";
-  const nextSteps = el("shiftNextSteps").value.trim() || "-";
-
-  const shiftDone = qsa("#shiftChecklist input[type='checkbox']").filter((b) => b.checked).length;
-  const shiftTotal = qsa("#shiftChecklist input[type='checkbox']").length;
-
-  const kpiLine = analyticsKPIs
-    ? `KPI pulse (28d): Impressions/day ${formatNum(analyticsKPIs.impPerDay, 0)}, ER ${analyticsKPIs.engRate.toFixed(2)}%, Follows/1k ${analyticsKPIs.followPer1k.toFixed(2)}`
-    : "KPI pulse: analytics not uploaded yet.";
-
-  const report = [
-    `Type2Future Operator Report`,
-    `Date: ${new Date().toLocaleDateString()}`,
-    `Operator: ${operatorName}`,
-    `Objective: ${objective}`,
-    "",
-    kpiLine,
-    `Shift checklist completion: ${shiftDone}/${shiftTotal}`,
-    "",
-    `Wins:`,
-    wins,
-    "",
-    `Blockers:`,
-    blockers,
-    "",
-    `Opportunities:`,
-    opportunities,
-    "",
-    `Next Steps:`,
-    nextSteps,
-  ].join("\n");
-
-  el("shiftReportOutput").value = report;
-}
-
-async function copyShiftReport() {
-  const txt = el("shiftReportOutput").value || "";
-  if (!txt) return;
+async function copyDraft() {
+  const text = el("postDraft").value;
+  if (!text) return;
   try {
-    await navigator.clipboard.writeText(txt);
+    await navigator.clipboard.writeText(text);
   } catch {}
 }
 
-function onCsvUpload(event) {
-  const file = event.target.files && event.target.files[0];
-  if (!file) return;
-  file.text().then((text) => {
-    const raw = parseCSV(text);
-    analyticsData = normalizeAnalytics(raw);
-    if (!analyticsData.length) {
-      el("analyticsSummary").textContent = "Could not parse analytics CSV. Check column headers.";
-      return;
-    }
-
-    localStorage.setItem(STORAGE.analytics, JSON.stringify(raw));
-    renderAnalytics(computeKPIs(analyticsData), analyticsData);
-  });
-}
-
-function loadDemoAnalytics() {
-  const demo = [
-    { Date: "Wed, Feb 11, 2026", Impressions: 906, Likes: 3, Engagements: 14, Bookmarks: 0, Shares: 0, "New follows": 0, Unfollows: 0, Replies: 1, Reposts: 0, "Profile visits": 4, "Create Post": 0 },
-    { Date: "Tue, Feb 10, 2026", Impressions: 891, Likes: 1, Engagements: 7, Bookmarks: 0, Shares: 0, "New follows": 0, Unfollows: 0, Replies: 0, Reposts: 0, "Profile visits": 2, "Create Post": 0 },
-    { Date: "Mon, Feb 9, 2026", Impressions: 965, Likes: 16, Engagements: 37, Bookmarks: 8, Shares: 0, "New follows": 2, Unfollows: 1, Replies: 2, Reposts: 1, "Profile visits": 8, "Create Post": 1 },
-    { Date: "Sun, Feb 8, 2026", Impressions: 1787, Likes: 13, Engagements: 51, Bookmarks: 1, Shares: 0, "New follows": 0, Unfollows: 2, Replies: 3, Reposts: 0, "Profile visits": 9, "Create Post": 1 },
-    { Date: "Sat, Feb 7, 2026", Impressions: 2450, Likes: 12, Engagements: 32, Bookmarks: 1, Shares: 0, "New follows": 0, Unfollows: 1, Replies: 1, Reposts: 1, "Profile visits": 7, "Create Post": 2 },
-  ];
-  analyticsData = normalizeAnalytics(demo);
-  renderAnalytics(computeKPIs(analyticsData), analyticsData);
-}
-
-function loadAnalyticsFromStorage() {
-  const raw = localStorage.getItem(STORAGE.analytics);
-  if (!raw) {
-    renderNextActions();
-    return;
-  }
-  try {
-    const parsed = JSON.parse(raw);
-    analyticsData = normalizeAnalytics(parsed);
-    renderAnalytics(computeKPIs(analyticsData), analyticsData);
-  } catch {
-    renderNextActions();
-  }
-}
-
-function updateGoalProjection() {
-  const current = Number(el("currentFollowers").value || 0);
-  const target = Number(el("targetFollowers").value || 0);
-  const targetDate = el("targetDate").value;
-
-  const remaining = Math.max(0, target - current);
-  const pace = analyticsKPIs ? Math.max(0.05, analyticsKPIs.netFollowPerDay || analyticsKPIs.followsPerDay || 0.05) : 0.8;
-  const days = remaining > 0 ? Math.ceil(remaining / pace) : 0;
-
-  el("daysToTarget").textContent = remaining === 0 ? "0" : String(days);
-
-  if (targetDate) {
-    const now = new Date();
-    const due = new Date(targetDate);
-    const diffDays = Math.max(1, Math.ceil((due - now) / (1000 * 60 * 60 * 24)));
-    const needed = remaining / diffDays;
-    el("neededPerDay").textContent = needed.toFixed(2);
-  } else {
-    el("neededPerDay").textContent = "Set target date";
-  }
-
-  saveSettings();
-}
-
-function initWeekPlanner() {
-  const body = el("weekPlanBody");
+function renderBenchmarks() {
+  const body = el("benchmarkBody");
   body.innerHTML = "";
-  WEEK_DAYS.forEach((day, i) => {
+  BENCHMARKS.forEach((b) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${day}</td>
-      <td><div class=\"slot\"><select data-plan=\"${i}-0-type\"><option>Flagship</option><option>Question</option><option>Thread</option><option>Reply Block</option><option>Off</option></select><input data-plan=\"${i}-0-note\" placeholder=\"Topic / purpose\" /></div></td>
-      <td><div class=\"slot\"><select data-plan=\"${i}-1-type\"><option>Support</option><option>Question</option><option>Clip + insight</option><option>Reply Block</option><option>Off</option></select><input data-plan=\"${i}-1-note\" placeholder=\"Topic / purpose\" /></div></td>
-      <td><div class=\"slot\"><select data-plan=\"${i}-2-type\"><option>Reply Sprint</option><option>Recap</option><option>Follow-up post</option><option>No post</option></select><input data-plan=\"${i}-2-note\" placeholder=\"Topic / purpose\" /></div></td>
+      <td><a href="https://x.com/${b.handle}" target="_blank" rel="noreferrer">@${b.handle}</a><br/><span class="tiny">${escape(b.name)}</span></td>
+      <td>${escape(b.why)}</td>
+      <td>${escape(b.learn)}</td>
     `;
     body.appendChild(tr);
   });
 }
 
-function saveWeekPlan() {
-  const payload = {};
-  qsa("[data-plan]").forEach((node) => {
-    payload[node.dataset.plan] = node.value;
-  });
-  localStorage.setItem(STORAGE.weeklyPlan, JSON.stringify(payload));
-}
-
-function loadWeekPlan() {
-  const raw = localStorage.getItem(STORAGE.weeklyPlan);
-  if (!raw) return;
-  try {
-    const payload = JSON.parse(raw);
-    qsa("[data-plan]").forEach((node) => {
-      if (Object.prototype.hasOwnProperty.call(payload, node.dataset.plan)) {
-        node.value = payload[node.dataset.plan];
-      }
+function populateSourceSelects() {
+  const selects = [el("sourceAccount"), el("logSourceAccount")];
+  selects.forEach((sel) => {
+    sel.innerHTML = '<option value="">No reference account</option>';
+    BENCHMARKS.forEach((b) => {
+      const opt = document.createElement("option");
+      opt.value = b.handle;
+      opt.textContent = `@${b.handle} (${b.name})`;
+      sel.appendChild(opt);
     });
-  } catch {}
+  });
 }
 
-function addExperiment() {
-  const hypothesis = el("expHypothesis").value.trim();
-  const metric = el("expMetric").value.trim();
-  const result = el("expResult").value.trim();
-  const outcome = el("expOutcome").value;
-
-  if (!hypothesis || !metric) return;
-
-  const items = getExperiments();
-  items.push({ hypothesis, metric, result, outcome, at: Date.now() });
-  localStorage.setItem(STORAGE.experiments, JSON.stringify(items));
-
-  el("expHypothesis").value = "";
-  el("expMetric").value = "";
-  el("expResult").value = "";
-
-  renderExperiments();
+function candidateBenchmarks() {
+  if (!kpi) return BENCHMARKS;
+  if (kpi.f1k < 1) return BENCHMARKS.filter((b) => b.tags.includes("conversion") || b.tags.includes("hooks"));
+  if (kpi.er < 2.2) return BENCHMARKS.filter((b) => b.tags.includes("signal") || b.tags.includes("authority"));
+  return BENCHMARKS.filter((b) => b.tags.includes("technical") || b.tags.includes("vision") || b.tags.includes("proof"));
 }
 
-function getExperiments() {
-  const raw = localStorage.getItem(STORAGE.experiments);
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
-}
-
-function loadExperiments() {
-  renderExperiments();
-}
-
-function renderExperiments() {
-  const wrap = el("experimentList");
-  const items = getExperiments().slice().reverse();
-  if (!items.length) {
-    wrap.innerHTML = `<div class=\"item\">No experiments logged yet.</div>`;
-    return;
-  }
-
-  wrap.innerHTML = items
-    .map((x) => {
-      const date = new Date(x.at).toLocaleDateString();
-      return `<div class=\"item\"><strong>${escapeHtml(x.hypothesis)}</strong><br/>Metric: ${escapeHtml(x.metric)}<br/>Result: ${escapeHtml(x.result || "-")}<br/>Outcome: ${escapeHtml(x.outcome)} · ${date}</div>`;
-    })
+function assignStudy() {
+  const pool = candidateBenchmarks();
+  const picks = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
+  const wrap = el("studyOutput");
+  wrap.innerHTML = picks
+    .map((p, i) => `<div><strong>Study ${i + 1}: @${p.handle}</strong><br/>Task: ${escape(p.learn)}<br/>Apply one tactic in today's flagship draft.</div>`)
     .join("");
 }
 
-function loadApiKey() {
-  const k = localStorage.getItem(STORAGE.apiKey);
-  if (k) el("apiKey").value = k;
+function saveIntelNotes() {
+  localStorage.setItem(STORAGE.intelNotes, el("intelNotes").value);
 }
 
-function identityContext() {
-  const intelNotes = (el("intelNotes")?.value || "").trim();
+function saveOperatorSettings() {
+  localStorage.setItem(STORAGE.shiftObjective, el("shiftObjective").value);
+  localStorage.setItem(STORAGE.voiceRules, el("voiceRules").value);
+  renderActions();
+}
+
+function getPostLogs() {
+  const raw = localStorage.getItem(STORAGE.postLogs);
+  if (!raw) return [];
+  try { return JSON.parse(raw); } catch { return []; }
+}
+
+function addPostLog() {
+  const log = {
+    date: el("logDate").value,
+    format: el("logFormat").value,
+    pillar: el("logPillar").value,
+    source: el("logSourceAccount").value,
+    impressions: Number(el("logImp").value || 0),
+    engagements: Number(el("logEng").value || 0),
+    follows: Number(el("logFollows").value || 0),
+    profileVisits: Number(el("logPv").value || 0),
+    note: el("logNote").value.trim(),
+    createdAt: Date.now(),
+  };
+
+  if (!log.impressions || !log.engagements) return;
+
   const logs = getPostLogs();
-  const groupedFormat = groupBy(logs, "format");
-  const bestFormat = topByMetric(groupedFormat, "f1k");
-  return [
-    `Mission: ${el("northStar").value.trim()}`,
-    `Audience: ${el("audience").value.trim()}`,
-    `Positioning: ${el("positioning").value.trim()}`,
-    `Pillars: ${[el("pillar1").value, el("pillar2").value, el("pillar3").value, el("pillar4").value].join(" | ")}`,
-    `Rules: ${el("rules").value.trim()}`,
-    `Skill Pack: ${el("skillPack").value.trim()}`,
-    `Benchmark winning format: ${bestFormat ? bestFormat.key : "not enough data yet"}`,
-    `Operator intel notes: ${intelNotes || "none"}`,
-  ].join("\n");
+  logs.push(log);
+  localStorage.setItem(STORAGE.postLogs, JSON.stringify(logs));
+
+  ["logImp", "logEng", "logFollows", "logPv", "logNote"].forEach((id) => { el(id).value = ""; });
+  renderPostLogs();
+  renderActions();
 }
 
-async function runAgent() {
-  const key = el("apiKey").value.trim();
-  const mode = el("agentMode").value;
-  const model = el("modelName").value.trim() || "gpt-4.1-mini";
-  const input = el("agentInput").value.trim();
+function renderPostLogs() {
+  const logs = getPostLogs();
+  const body = el("postLogBody");
+  body.innerHTML = "";
 
-  if (!key) {
-    el("agentOutput").value = "Add API key first.";
+  if (!logs.length) {
+    body.innerHTML = '<tr><td colspan="5" class="tiny">No logs yet.</td></tr>';
+    el("reviewInsights").innerHTML = "<div>Log at least 5 posts to unlock pattern insights.</div>";
     return;
   }
 
+  const sorted = [...logs].sort((a, b) => b.createdAt - a.createdAt);
+  sorted.slice(0, 25).forEach((r) => {
+    const f1k = r.impressions ? (r.follows / r.impressions) * 1000 : 0;
+    const er = r.impressions ? (r.engagements / r.impressions) * 100 : 0;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escape(r.date || "-")}</td>
+      <td>${escape(r.format)}</td>
+      <td>${escape(r.pillar)}</td>
+      <td>${f1k.toFixed(2)}</td>
+      <td>${er.toFixed(2)}</td>
+    `;
+    body.appendChild(tr);
+  });
+
+  renderReviewInsights(logs);
+}
+
+function renderReviewInsights(logs) {
+  const byFormat = groupBy(logs, "format");
+  const byPillar = groupBy(logs, "pillar");
+  const bySource = groupBy(logs.filter((l) => l.source), "source");
+
+  const bestFormat = topByMetric(byFormat, "f1k");
+  const bestPillar = topByMetric(byPillar, "er");
+  const bestSource = topByMetric(bySource, "f1k");
+
+  const lines = [];
+  lines.push(`Best format by follow conversion: ${bestFormat ? bestFormat.key : "-"} (${bestFormat ? bestFormat.value.toFixed(2) : "-"} f/1k)`);
+  lines.push(`Best pillar by engagement rate: ${bestPillar ? bestPillar.key : "-"} (${bestPillar ? bestPillar.value.toFixed(2) : "-"}%)`);
+  lines.push(`Best source-account lift: ${bestSource ? "@" + bestSource.key : "-"} (${bestSource ? bestSource.value.toFixed(2) : "-"} f/1k)`);
+  lines.push("Action: next 3 posts should copy the winning format + pillar pattern.");
+
+  el("reviewInsights").innerHTML = lines.map((x) => `<div>${escape(x)}</div>`).join("");
+}
+
+function groupBy(logs, key) {
+  const out = {};
+  logs.forEach((l) => {
+    const k = l[key];
+    if (!k) return;
+    const f1k = l.impressions ? (l.follows / l.impressions) * 1000 : 0;
+    const er = l.impressions ? (l.engagements / l.impressions) * 100 : 0;
+    (out[k] ||= []).push({ f1k, er });
+  });
+  return out;
+}
+
+function topByMetric(grouped, metric) {
+  const rows = Object.entries(grouped).map(([key, arr]) => ({
+    key,
+    value: arr.reduce((a, b) => a + b[metric], 0) / arr.length,
+  }));
+  if (!rows.length) return null;
+  rows.sort((a, b) => b.value - a.value);
+  return rows[0];
+}
+
+async function runAi() {
+  const key = el("apiKey").value.trim();
+  if (!key) {
+    el("aiOutput").value = "Add API key first.";
+    return;
+  }
   localStorage.setItem(STORAGE.apiKey, key);
 
-  const modeInstruction = {
-    operator: "Create a complete operator shift brief: priorities, posting slots, engagement targets, escalation checks, and end-of-day report checklist.",
-    planner: "Create a practical day plan with 5 steps, estimated time, and expected KPI impact.",
-    ideate: "Generate 12 post ideas. For each: hook, signal, implication, close.",
-    draft: "Write one complete high-performing post in this account's voice.",
-    critique: "Critique draft brutally and rewrite to improve conversion and clarity.",
-    repurpose: "Create 6 variants: short, long, contrarian, question-led, thread-opener, quote-tweet format.",
+  const mode = el("aiMode").value;
+  const objective = el("shiftObjective").value.trim();
+  const voice = el("voiceRules").value.trim();
+  const draft = el("postDraft").value.trim();
+  const notes = el("intelNotes").value.trim();
+  const modePrompt = {
+    improve: "Improve this draft for clarity, authority, and follow conversion. Return final draft only.",
+    ideas: "Generate 10 high-quality post ideas. For each: hook, signal, implication, close.",
+    replies: "Generate 10 strategic replies to frontier AI/energy posts. Each must add insight, not praise.",
   }[mode];
 
+  const bestFormat = topByMetric(groupBy(getPostLogs(), "format"), "f1k");
+
   const system = [
-    "You are Type2 Master Station AI, a senior social media strategist.",
-    "Your job: maximize impact, authority, and follower growth for @type2future.",
-    "Be concrete, tactical, and specific.",
-    identityContext(),
-    `Mode: ${modeInstruction}`,
+    "You are a social media strategist for @type2future.",
+    "Primary goal: create high-quality content that increases follower growth and authority.",
+    `Shift objective: ${objective || "none"}`,
+    `Voice rules: ${voice}`,
+    `Winning format so far: ${bestFormat ? bestFormat.key : "unknown"}`,
+    `Intel notes: ${notes || "none"}`,
+    modePrompt,
   ].join("\n\n");
 
-  const payload = {
-    model,
-    input: [
-      { role: "system", content: [{ type: "text", text: system }] },
-      { role: "user", content: [{ type: "text", text: input || "Use current context and produce best output." }] },
-    ],
-  };
+  const user = mode === "improve" ? (draft || "No draft provided.") : (el("signalInput").value.trim() || "Use current context.");
 
-  el("agentOutput").value = "Running agent...";
+  el("aiOutput").value = "Running AI...";
 
   try {
     const res = await fetch("https://api.openai.com/v1/responses", {
@@ -1263,31 +666,72 @@ async function runAgent() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${key}`,
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        model: "gpt-4.1-mini",
+        input: [
+          { role: "system", content: [{ type: "text", text: system }] },
+          { role: "user", content: [{ type: "text", text: user }] },
+        ],
+      }),
     });
 
     if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || `HTTP ${res.status}`);
+      const t = await res.text();
+      throw new Error(t || `HTTP ${res.status}`);
     }
 
     const data = await res.json();
-    el("agentOutput").value = data.output_text || "No output text returned.";
+    el("aiOutput").value = data.output_text || "No output text returned.";
   } catch (err) {
-    el("agentOutput").value = `Agent error: ${err.message}`;
+    el("aiOutput").value = `AI error: ${err.message}`;
   }
 }
 
-function formatNum(v, digits = 2) {
-  return new Intl.NumberFormat(undefined, { maximumFractionDigits: digits, minimumFractionDigits: digits }).format(v);
+function onCsvUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  file.text().then((text) => {
+    const raw = parseCSV(text);
+    analytics = normalizeAnalytics(raw);
+    if (!analytics.length) {
+      el("diagnostics").innerHTML = "<div>Could not parse CSV. Check export format.</div>";
+      return;
+    }
+    localStorage.setItem(STORAGE.analyticsRaw, JSON.stringify(raw));
+    kpi = computeKpi(analytics);
+    renderKpis();
+    renderDiagnostics();
+    renderActions();
+  });
+}
+
+function loadDemoCsv() {
+  const demo = [
+    { Date: "Wed, Feb 11, 2026", Impressions: 906, Engagements: 14, "New follows": 0, Unfollows: 0 },
+    { Date: "Tue, Feb 10, 2026", Impressions: 891, Engagements: 7, "New follows": 0, Unfollows: 0 },
+    { Date: "Mon, Feb 9, 2026", Impressions: 965, Engagements: 37, "New follows": 2, Unfollows: 1 },
+    { Date: "Sun, Feb 8, 2026", Impressions: 1787, Engagements: 51, "New follows": 0, Unfollows: 2 },
+    { Date: "Sat, Feb 7, 2026", Impressions: 2450, Engagements: 32, "New follows": 0, Unfollows: 1 },
+  ];
+  analytics = normalizeAnalytics(demo);
+  kpi = computeKpi(analytics);
+  renderKpis();
+  renderDiagnostics();
+  renderActions();
+}
+
+function num(v, digits = 2) {
+  return new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: digits,
+    minimumFractionDigits: digits,
+  }).format(v);
 }
 
 function signed(v) {
-  const s = v >= 0 ? "+" : "";
-  return `${s}${v.toFixed(2)}`;
+  return `${v >= 0 ? "+" : ""}${v.toFixed(2)}`;
 }
 
-function escapeHtml(str) {
+function escape(str) {
   return String(str)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
