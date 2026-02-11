@@ -3,6 +3,8 @@ const STORAGE = {
   checklist: "t2_master_checklist",
   shiftChecklist: "t2_master_shift_checklist",
   operatorProfile: "t2_master_operator_profile",
+  intelNotes: "t2_master_intel_notes",
+  postLogs: "t2_master_post_logs",
   experiments: "t2_master_experiments",
   apiKey: "t2_master_api_key",
   analytics: "t2_master_analytics",
@@ -26,6 +28,89 @@ const SHIFT_TASKS = [
   { id: "s3", text: "Publish with a clear follow-conversion close" },
   { id: "s4", text: "Complete strategic reply sprint (quality-first)" },
   { id: "s5", text: "Capture one experiment learning and update report" },
+];
+
+const BENCHMARK_ACCOUNTS = [
+  {
+    handle: "lexfridman",
+    name: "Lex Fridman",
+    why: "High-trust frontier signal curator referenced in your top-performing posts.",
+    learn: "Use source-backed synthesis and clearly framed implications.",
+    avoid: "Do not mirror long podcast-style cadence; keep your feed sharper and faster.",
+    tags: ["signal", "authority", "longform"],
+  },
+  {
+    handle: "demishassabis",
+    name: "Demis Hassabis",
+    why: "Direct connection to AGI frontier and credible scientific narrative.",
+    learn: "Ground posts in concrete breakthroughs and measurable progress.",
+    avoid: "Avoid over-corporate tone; keep your personal thesis voice.",
+    tags: ["signal", "credibility", "science"],
+  },
+  {
+    handle: "sama",
+    name: "Sam Altman",
+    why: "Strong product update framing and concise momentum signaling.",
+    learn: "Write short updates that still carry strategic implications.",
+    avoid: "Do not rely on insider status cues; add external context for your audience.",
+    tags: ["conversion", "brevity", "product"],
+  },
+  {
+    handle: "EMostaque",
+    name: "Emad",
+    why: "Narrative around open AI, distribution, and memetic founder energy.",
+    learn: "Blend frontier takes with directional bets and ecosystem framing.",
+    avoid: "Avoid posting low-context hype fragments.",
+    tags: ["ecosystem", "narrative", "momentum"],
+  },
+  {
+    handle: "garrytan",
+    name: "Garry Tan",
+    why: "Builder-focused optimism and practical founder messaging.",
+    learn: "Tie macro optimism to clear founder/operator action.",
+    avoid: "Do not shift into generic startup chatter disconnected from Type2Future.",
+    tags: ["founders", "practical", "conversion"],
+  },
+  {
+    handle: "nateliason",
+    name: "Nat Eliason",
+    why: "High-output builder content and product-led credibility.",
+    learn: "Show proof-of-work and ship updates consistently.",
+    avoid: "Avoid over-indexing on pure product promotion.",
+    tags: ["builder", "shipping", "proof"],
+  },
+  {
+    handle: "beffjezos",
+    name: "Beff (e/acc)",
+    why: "Very close thematic overlap with Kardashev and acceleration ideology.",
+    learn: "Lean into clear abundance narrative with bold but specific framing.",
+    avoid: "Avoid insider memes without context.",
+    tags: ["kardashev", "acceleration", "culture"],
+  },
+  {
+    handle: "_sholtodouglas",
+    name: "Sholto Douglas",
+    why: "Strong technical future framing and intelligence-to-abundance arcs.",
+    learn: "Use technically grounded takes with explicit future timelines.",
+    avoid: "Do not become too niche without broader implications.",
+    tags: ["technical", "timeline", "signal"],
+  },
+  {
+    handle: "tszzl",
+    name: "roon",
+    why: "Strong memetic hooks and audience-pull language.",
+    learn: "Use punchy opening lines that increase scroll-stop rate.",
+    avoid: "Avoid cryptic posting that lowers conversion clarity.",
+    tags: ["hooks", "memetic", "reach"],
+  },
+  {
+    handle: "elonmusk",
+    name: "Elon Musk",
+    why: "Core public narrative source for energy, space, and civilization scale.",
+    learn: "Use first-principles framing and high-consequence vision.",
+    avoid: "Do not imitate polarizing cadence; adapt only strategic clarity.",
+    tags: ["vision", "first-principles", "reach"],
+  },
 ];
 
 const HOOK_BANK = {
@@ -63,6 +148,7 @@ function init() {
   initNavigation();
   initChecklist();
   initShiftChecklist();
+  initIntelConsole();
   initWeekPlanner();
   bindEvents();
   loadSavedState();
@@ -110,6 +196,9 @@ function bindEvents() {
   el("saveOperatorProfile").addEventListener("click", saveOperatorProfile);
   el("generateShiftReport").addEventListener("click", generateShiftReport);
   el("copyShiftReport").addEventListener("click", copyShiftReport);
+  el("assignStudySprint").addEventListener("click", assignStudySprint);
+  el("saveIntelNotes").addEventListener("click", saveIntelNotes);
+  el("addPostLog").addEventListener("click", addPostLog);
   qsa(".prompt-seed").forEach((btn) => btn.addEventListener("click", applyPromptSeed));
 }
 
@@ -118,6 +207,8 @@ function loadSavedState() {
   loadChecklist();
   loadShiftChecklist();
   loadOperatorProfile();
+  loadIntelNotes();
+  loadPostLogs();
   renderNextActions();
   loadExperiments();
   loadApiKey();
@@ -259,6 +350,187 @@ function renderShiftChecklistProgress() {
   const pct = total ? (done / total) * 100 : 0;
   el("shiftProgressFill").style.width = `${pct}%`;
   el("shiftProgressText").textContent = `${done}/${total} complete`;
+}
+
+function initIntelConsole() {
+  renderBenchmarkAccounts();
+  populateSourceAccountSelect();
+  const d = new Date();
+  el("logDate").value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function renderBenchmarkAccounts() {
+  const body = el("benchmarkBody");
+  body.innerHTML = "";
+  BENCHMARK_ACCOUNTS.forEach((a) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><a href="https://x.com/${a.handle}" target="_blank" rel="noreferrer">@${a.handle}</a><br/><span class="tiny">${escapeHtml(a.name)}</span></td>
+      <td>${escapeHtml(a.why)}</td>
+      <td>${escapeHtml(a.learn)}</td>
+      <td>${escapeHtml(a.avoid)}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function populateSourceAccountSelect() {
+  const sel = el("logSourceAccount");
+  sel.innerHTML = "<option value=\"\">Source account (optional)</option>";
+  BENCHMARK_ACCOUNTS.forEach((a) => {
+    const opt = document.createElement("option");
+    opt.value = a.handle;
+    opt.textContent = `@${a.handle} (${a.name})`;
+    sel.appendChild(opt);
+  });
+}
+
+function getStudyCandidates() {
+  if (!analyticsKPIs) return BENCHMARK_ACCOUNTS;
+  if (analyticsKPIs.followPer1k < 1) return BENCHMARK_ACCOUNTS.filter((a) => a.tags.includes("conversion") || a.tags.includes("hooks"));
+  if (analyticsKPIs.engRate < 2.2) return BENCHMARK_ACCOUNTS.filter((a) => a.tags.includes("signal") || a.tags.includes("longform"));
+  return BENCHMARK_ACCOUNTS.filter((a) => a.tags.includes("vision") || a.tags.includes("builder") || a.tags.includes("technical"));
+}
+
+function assignStudySprint() {
+  const pool = getStudyCandidates();
+  const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
+  const wrap = el("studySprintOutput");
+  wrap.innerHTML = shuffled
+    .map((a, i) => `<div class="item"><strong>Slot ${i + 1}: @${a.handle}</strong><br/>Study target: ${escapeHtml(a.learn)}<br/>Deliverable: 1 tactic to apply in today’s flagship post.</div>`)
+    .join("");
+}
+
+function saveIntelNotes() {
+  localStorage.setItem(STORAGE.intelNotes, el("intelNotes").value);
+}
+
+function loadIntelNotes() {
+  const raw = localStorage.getItem(STORAGE.intelNotes);
+  if (raw) el("intelNotes").value = raw;
+}
+
+function getPostLogs() {
+  const raw = localStorage.getItem(STORAGE.postLogs);
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
+
+function loadPostLogs() {
+  renderPostLogs();
+}
+
+function addPostLog() {
+  const row = {
+    date: el("logDate").value || new Date().toISOString().slice(0, 10),
+    format: el("logFormat").value,
+    pillar: el("logPillar").value,
+    source: el("logSourceAccount").value,
+    url: el("logUrl").value.trim(),
+    impressions: Number(el("logImpressions").value || 0),
+    engagements: Number(el("logEngagements").value || 0),
+    follows: Number(el("logFollows").value || 0),
+    profileVisits: Number(el("logProfileVisits").value || 0),
+    notes: el("logNotes").value.trim(),
+    createdAt: Date.now(),
+  };
+  if (!row.impressions || !row.engagements) return;
+  const logs = getPostLogs();
+  logs.push(row);
+  localStorage.setItem(STORAGE.postLogs, JSON.stringify(logs));
+  renderPostLogs();
+  el("logUrl").value = "";
+  el("logImpressions").value = "";
+  el("logEngagements").value = "";
+  el("logFollows").value = "";
+  el("logProfileVisits").value = "";
+  el("logNotes").value = "";
+}
+
+function renderPostLogs() {
+  const logs = getPostLogs();
+  const body = el("postLogBody");
+  if (!body) return;
+  body.innerHTML = "";
+  if (!logs.length) {
+    body.innerHTML = `<tr><td colspan="5" class="empty">No post logs yet.</td></tr>`;
+    renderPostLogInsights([]);
+    return;
+  }
+
+  const sorted = [...logs].sort((a, b) => b.createdAt - a.createdAt);
+  sorted.slice(0, 20).forEach((r) => {
+    const f1k = r.impressions ? (r.follows / r.impressions) * 1000 : 0;
+    const er = r.impressions ? (r.engagements / r.impressions) * 100 : 0;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(r.date)}</td>
+      <td>${escapeHtml(r.format)}</td>
+      <td>${escapeHtml(r.pillar)}</td>
+      <td>${f1k.toFixed(2)}</td>
+      <td>${er.toFixed(2)}</td>
+    `;
+    body.appendChild(tr);
+  });
+
+  renderPostLogInsights(logs);
+}
+
+function renderPostLogInsights(logs) {
+  const wrap = el("postLogInsights");
+  if (!wrap) return;
+  if (!logs.length) {
+    wrap.innerHTML = `<div class="item">Log at least 5 posts to unlock pattern insights.</div>`;
+    return;
+  }
+
+  const byFormat = {};
+  const byPillar = {};
+  const bySource = {};
+  logs.forEach((r) => {
+    const f1k = r.impressions ? (r.follows / r.impressions) * 1000 : 0;
+    const er = r.impressions ? (r.engagements / r.impressions) * 100 : 0;
+    (byFormat[r.format] ||= []).push({ f1k, er });
+    (byPillar[r.pillar] ||= []).push({ f1k, er });
+    if (r.source) (bySource[r.source] ||= []).push({ f1k, er });
+  });
+
+  const bestFormat = topByMetric(byFormat, "f1k");
+  const bestPillar = topByMetric(byPillar, "er");
+  const bestSource = topByMetric(bySource, "f1k");
+
+  wrap.innerHTML = `
+    <div class="item"><strong>Best format (follows/1k):</strong> ${bestFormat?.key || "-"} (${bestFormat ? bestFormat.value.toFixed(2) : "-"})</div>
+    <div class="item"><strong>Best pillar (engagement rate):</strong> ${bestPillar?.key || "-"} (${bestPillar ? bestPillar.value.toFixed(2) : "-"}%)</div>
+    <div class="item"><strong>Best source account lift:</strong> ${bestSource?.key ? "@" + bestSource.key : "-"} (${bestSource ? bestSource.value.toFixed(2) : "-"} f/1k)</div>
+    <div class="item"><strong>Action:</strong> Double-down next 3 posts on the current winning format + pillar combo.</div>
+  `;
+}
+
+function groupBy(logs, key) {
+  const out = {};
+  logs.forEach((r) => {
+    const k = r[key];
+    if (!k) return;
+    const f1k = r.impressions ? (r.follows / r.impressions) * 1000 : 0;
+    const er = r.impressions ? (r.engagements / r.impressions) * 100 : 0;
+    (out[k] ||= []).push({ f1k, er });
+  });
+  return out;
+}
+
+function topByMetric(grouped, metric) {
+  const rows = Object.entries(grouped).map(([key, arr]) => {
+    const avg = arr.reduce((a, b) => a + b[metric], 0) / arr.length;
+    return { key, value: avg };
+  });
+  if (!rows.length) return null;
+  rows.sort((a, b) => b.value - a.value);
+  return rows[0];
 }
 
 function saveIdentity() {
@@ -668,6 +940,12 @@ function getActionItems() {
   const items = [...pending];
   if (!el("operatorName").value.trim()) items.push("Set operator handoff profile in Operator Console.");
   if (!el("operatorShiftObjective").value.trim()) items.push("Define the current shift objective for the operator.");
+  const logs = getPostLogs();
+  if (logs.length < 5) items.push("Log at least 5 published posts in Growth Intel > Review Lab.");
+  if (logs.length >= 5) {
+    const bestFormat = topByMetric(groupBy(logs, "format"), "f1k");
+    if (bestFormat) items.push(`Prioritize '${bestFormat.key}' format today (best follow conversion in your logs).`);
+  }
   if (analyticsKPIs) {
     if (analyticsKPIs.followPer1k < 1) items.push("Rewrite post closes to include explicit reason-to-follow.");
     if (analyticsKPIs.engRate < 2.2) items.push("Use one stronger claim with a concrete number or source in today’s flagship post.");
@@ -922,6 +1200,10 @@ function loadApiKey() {
 }
 
 function identityContext() {
+  const intelNotes = (el("intelNotes")?.value || "").trim();
+  const logs = getPostLogs();
+  const groupedFormat = groupBy(logs, "format");
+  const bestFormat = topByMetric(groupedFormat, "f1k");
   return [
     `Mission: ${el("northStar").value.trim()}`,
     `Audience: ${el("audience").value.trim()}`,
@@ -929,6 +1211,8 @@ function identityContext() {
     `Pillars: ${[el("pillar1").value, el("pillar2").value, el("pillar3").value, el("pillar4").value].join(" | ")}`,
     `Rules: ${el("rules").value.trim()}`,
     `Skill Pack: ${el("skillPack").value.trim()}`,
+    `Benchmark winning format: ${bestFormat ? bestFormat.key : "not enough data yet"}`,
+    `Operator intel notes: ${intelNotes || "none"}`,
   ].join("\n");
 }
 

@@ -41,6 +41,7 @@
         <button class="nav-btn active" data-view="dashboard">Dashboard</button>
         <button class="nav-btn" data-view="strategy">Strategy</button>
         <button class="nav-btn" data-view="operator">Operator Console</button>
+        <button class="nav-btn" data-view="intel">Growth Intel</button>
         <button class="nav-btn" data-view="content">Content Lab</button>
         <button class="nav-btn" data-view="analytics">Analytics</button>
         <button class="nav-btn" data-view="calendar">Weekly Plan</button>
@@ -257,6 +258,96 @@ Escalation package must include:
             <button class="btn secondary" id="copyShiftReport">Copy Report</button>
           </div>
           <textarea id="shiftReportOutput" rows="10" placeholder="Daily report appears here"></textarea>
+        </article>
+      </section>
+
+      <section class="view" id="view-intel">
+        <div class="grid-2">
+          <article class="card">
+            <h3>Benchmark Accounts</h3>
+            <p class="tiny">Closest accounts to your mission and style. Study what they do, not just what they say.</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Account</th>
+                    <th>Why relevant</th>
+                    <th>What to learn</th>
+                    <th>Do not copy</th>
+                  </tr>
+                </thead>
+                <tbody id="benchmarkBody">
+                  <tr><td colspan="4" class="empty">Loading benchmark intel...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Daily Study Sprint</h3>
+            <p class="tiny">Assign 3 accounts each day. Operator extracts tactics and applies immediately.</p>
+            <button class="btn secondary" id="assignStudySprint">Assign Today's Study Sprint</button>
+            <div id="studySprintOutput" class="stack"></div>
+            <label for="intelNotes">Intel notes (operator)</label>
+            <textarea id="intelNotes" rows="9" placeholder="Write what is working in benchmark accounts and how Type2Future should adapt..."></textarea>
+            <button class="btn" id="saveIntelNotes">Save Intel Notes</button>
+          </article>
+        </div>
+
+        <article class="card">
+          <h3>Published Post Review Lab</h3>
+          <p class="tiny">Track every important post manually. This is the engine for understanding what works and improving it.</p>
+          <div class="grid-3 compact">
+            <input id="logDate" type="date" />
+            <select id="logFormat">
+              <option value="flagship">Flagship insight</option>
+              <option value="clip">Clip + interpretation</option>
+              <option value="question">Question-led</option>
+              <option value="thread">Thread</option>
+              <option value="quote">Quote post</option>
+              <option value="reply">Reply-led</option>
+            </select>
+            <select id="logPillar">
+              <option value="AI capability + agency">AI capability + agency</option>
+              <option value="Energy abundance + Kardashev">Energy abundance + Kardashev</option>
+              <option value="Civilization design + incentives">Civilization design + incentives</option>
+              <option value="Practical builder playbooks">Practical builder playbooks</option>
+            </select>
+          </div>
+          <div class="grid-2">
+            <input id="logUrl" type="text" placeholder="Post URL (optional)" />
+            <select id="logSourceAccount"></select>
+          </div>
+          <div class="grid-3 compact">
+            <input id="logImpressions" type="number" min="0" placeholder="Impressions" />
+            <input id="logEngagements" type="number" min="0" placeholder="Engagements" />
+            <input id="logFollows" type="number" min="0" placeholder="Follows" />
+          </div>
+          <div class="grid-2">
+            <input id="logProfileVisits" type="number" min="0" placeholder="Profile visits" />
+            <input id="logNotes" type="text" placeholder="Observation (what worked?)" />
+          </div>
+          <button class="btn secondary" id="addPostLog">Add Post Log</button>
+
+          <div class="grid-2">
+            <div id="postLogInsights" class="stack"></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Format</th>
+                    <th>Pillar</th>
+                    <th>F/1k</th>
+                    <th>ER%</th>
+                  </tr>
+                </thead>
+                <tbody id="postLogBody">
+                  <tr><td colspan="5" class="empty">No post logs yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </article>
       </section>
 
