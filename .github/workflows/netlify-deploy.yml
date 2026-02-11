@@ -17,17 +17,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate Netlify token
+      - name: Select deploy mode
+        id: mode
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+        run: |
+          if [ -n "$NETLIFY_AUTH_TOKEN" ]; then
+            echo "mode=api" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ -n "$NETLIFY_BUILD_HOOK_URL" ]; then
+            echo "mode=hook" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Missing deploy secrets."
+          echo "Set NETLIFY_AUTH_TOKEN (recommended) or NETLIFY_BUILD_HOOK_URL."
+          exit 1
+
+      - name: Trigger Netlify build hook (fallback)
+        if: steps.mode.outputs.mode == 'hook'
+        env:
+          NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+        run: |
+          curl -fsS -X POST -d '{}' "$NETLIFY_BUILD_HOOK_URL"
+          echo "Netlify build hook triggered."
+
+      - name: Validate Netlify API token
+        if: steps.mode.outputs.mode == 'api'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         run: |
           if [ -z "$NETLIFY_AUTH_TOKEN" ]; then
-            echo "Missing GitHub secret: NETLIFY_AUTH_TOKEN"
-            echo "Create it in: Repo Settings -> Secrets and variables -> Actions"
+            echo "Missing NETLIFY_AUTH_TOKEN"
             exit 1
           fi
 
       - name: Deploy site to Netlify (production)
+        if: steps.mode.outputs.mode == 'api'
         uses: nwtgck/actions-netlify@v3.0
         with:
           publish-dir: .

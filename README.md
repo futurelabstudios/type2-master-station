@@ -27,8 +27,10 @@ This repo uses GitHub Actions for Netlify production deploys on every push to `m
 
 Required one-time setup:
 
-1. In GitHub repo settings, add secret `NETLIFY_AUTH_TOKEN`.
-2. In Netlify, create a Personal Access Token (User settings -> Applications -> Personal access tokens).
+1. In GitHub repo settings, set one of:
+   - `NETLIFY_AUTH_TOKEN` (recommended), or
+   - `NETLIFY_BUILD_HOOK_URL` (fallback mode).
+2. If using token mode, create token in Netlify: User settings -> Applications -> Personal access tokens.
 3. Push to `main` and verify workflow `Deploy to Netlify` succeeds.
 
 Site ID is already wired in workflow: `cb986de0-029f-478e-bb4d-1051ec155f16`.
