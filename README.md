@@ -7,6 +7,7 @@ Professional local growth platform for `@type2future`.
 - Dashboard command center (daily sprint + next best actions)
 - Goal projection (`current followers -> target`, pace math)
 - Strategy workspace (mission, audience, positioning, pillars, rules)
+- Operator Console (handoff profile, shift checklist, escalation matrix, daily operator report)
 - Content Lab (signal-to-post builder + draft quality scoring)
 - Analytics diagnostics (CSV upload, KPI trends, top days, recommendations)
 - Weekly planning board (3 slots/day)

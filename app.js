@@ -1,6 +1,8 @@
 const STORAGE = {
   identity: "t2_master_identity",
   checklist: "t2_master_checklist",
+  shiftChecklist: "t2_master_shift_checklist",
+  operatorProfile: "t2_master_operator_profile",
   experiments: "t2_master_experiments",
   apiKey: "t2_master_api_key",
   analytics: "t2_master_analytics",
@@ -16,6 +18,14 @@ const DAILY_TASKS = [
   { id: "d5", text: "Publish in planned slot with clear CTA", weight: 1 },
   { id: "d6", text: "Leave 8 strategic replies in target network", weight: 1 },
   { id: "d7", text: "Log one experiment insight", weight: 1 },
+];
+
+const SHIFT_TASKS = [
+  { id: "s1", text: "Read today's objective and constraints before posting" },
+  { id: "s2", text: "Produce at least 1 flagship draft and score it 80+" },
+  { id: "s3", text: "Publish with a clear follow-conversion close" },
+  { id: "s4", text: "Complete strategic reply sprint (quality-first)" },
+  { id: "s5", text: "Capture one experiment learning and update report" },
 ];
 
 const HOOK_BANK = {
@@ -52,6 +62,7 @@ let analyticsKPIs = null;
 function init() {
   initNavigation();
   initChecklist();
+  initShiftChecklist();
   initWeekPlanner();
   bindEvents();
   loadSavedState();
@@ -96,11 +107,18 @@ function bindEvents() {
   el("addExperiment").addEventListener("click", addExperiment);
   el("runAgent").addEventListener("click", runAgent);
   el("beginnerMode").addEventListener("change", onBeginnerModeChange);
+  el("saveOperatorProfile").addEventListener("click", saveOperatorProfile);
+  el("generateShiftReport").addEventListener("click", generateShiftReport);
+  el("copyShiftReport").addEventListener("click", copyShiftReport);
+  qsa(".prompt-seed").forEach((btn) => btn.addEventListener("click", applyPromptSeed));
 }
 
 function loadSavedState() {
   loadIdentity();
   loadChecklist();
+  loadShiftChecklist();
+  loadOperatorProfile();
+  renderNextActions();
   loadExperiments();
   loadApiKey();
   loadSettings();
@@ -191,6 +209,58 @@ function renderChecklistProgress() {
   el("dailyProgressText").textContent = `${done}/${total} complete`;
 }
 
+function initShiftChecklist() {
+  const wrap = el("shiftChecklist");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+
+  SHIFT_TASKS.forEach((task) => {
+    const label = document.createElement("label");
+    label.innerHTML = `<input type=\"checkbox\" data-shift-id=\"${task.id}\" /> ${escapeHtml(task.text)}`;
+    wrap.appendChild(label);
+  });
+
+  qsa("#shiftChecklist input[type='checkbox']").forEach((box) => {
+    box.addEventListener("change", () => {
+      saveShiftChecklist();
+      renderShiftChecklistProgress();
+    });
+  });
+
+  renderShiftChecklistProgress();
+}
+
+function saveShiftChecklist() {
+  const state = qsa("#shiftChecklist input[type='checkbox']").map((box) => ({
+    id: box.dataset.shiftId,
+    checked: box.checked,
+  }));
+  localStorage.setItem(STORAGE.shiftChecklist, JSON.stringify(state));
+}
+
+function loadShiftChecklist() {
+  const raw = localStorage.getItem(STORAGE.shiftChecklist);
+  if (!raw) return;
+  try {
+    const state = JSON.parse(raw);
+    state.forEach((row) => {
+      const box = document.querySelector(`#shiftChecklist input[data-shift-id='${row.id}']`);
+      if (box) box.checked = !!row.checked;
+    });
+  } catch {}
+  renderShiftChecklistProgress();
+}
+
+function renderShiftChecklistProgress() {
+  const boxes = qsa("#shiftChecklist input[type='checkbox']");
+  if (!boxes.length) return;
+  const done = boxes.filter((b) => b.checked).length;
+  const total = boxes.length;
+  const pct = total ? (done / total) * 100 : 0;
+  el("shiftProgressFill").style.width = `${pct}%`;
+  el("shiftProgressText").textContent = `${done}/${total} complete`;
+}
+
 function saveIdentity() {
   const payload = {
     northStar: el("northStar").value,
@@ -218,6 +288,30 @@ function loadIdentity() {
       });
     }
     if (d.rules) el("rules").value = d.rules;
+  } catch {}
+}
+
+function saveOperatorProfile() {
+  const payload = {
+    operatorName: el("operatorName").value.trim(),
+    shiftObjective: el("operatorShiftObjective").value.trim(),
+    constraints: el("operatorConstraints").value,
+    escalationRules: el("escalationRules").value,
+  };
+  localStorage.setItem(STORAGE.operatorProfile, JSON.stringify(payload));
+  el("handoffStatus").textContent = "Handoff profile saved.";
+  renderNextActions();
+}
+
+function loadOperatorProfile() {
+  const raw = localStorage.getItem(STORAGE.operatorProfile);
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    if (d.operatorName) el("operatorName").value = d.operatorName;
+    if (d.shiftObjective) el("operatorShiftObjective").value = d.shiftObjective;
+    if (d.constraints) el("operatorConstraints").value = d.constraints;
+    if (d.escalationRules) el("escalationRules").value = d.escalationRules;
   } catch {}
 }
 
@@ -572,6 +666,8 @@ function getActionItems() {
   });
 
   const items = [...pending];
+  if (!el("operatorName").value.trim()) items.push("Set operator handoff profile in Operator Console.");
+  if (!el("operatorShiftObjective").value.trim()) items.push("Define the current shift objective for the operator.");
   if (analyticsKPIs) {
     if (analyticsKPIs.followPer1k < 1) items.push("Rewrite post closes to include explicit reason-to-follow.");
     if (analyticsKPIs.engRate < 2.2) items.push("Use one stronger claim with a concrete number or source in today’s flagship post.");
@@ -608,6 +704,64 @@ function generateTodayPlan() {
   ].join("\n");
 
   el("todayPlan").value = plan;
+}
+
+function applyPromptSeed(event) {
+  const seed = event.currentTarget.dataset.seed || "";
+  el("agentInput").value = seed;
+  qsa(".nav-btn").forEach((b) => b.classList.remove("active"));
+  const aiBtn = qsa(".nav-btn").find((b) => b.dataset.view === "ai");
+  if (aiBtn) aiBtn.classList.add("active");
+  qsa(".view").forEach((v) => v.classList.remove("active"));
+  el("view-ai").classList.add("active");
+}
+
+function generateShiftReport() {
+  const operatorName = el("operatorName").value.trim() || "Operator";
+  const objective = el("operatorShiftObjective").value.trim() || "No objective set";
+  const wins = el("shiftWins").value.trim() || "-";
+  const blockers = el("shiftBlockers").value.trim() || "-";
+  const opportunities = el("shiftOpportunities").value.trim() || "-";
+  const nextSteps = el("shiftNextSteps").value.trim() || "-";
+
+  const shiftDone = qsa("#shiftChecklist input[type='checkbox']").filter((b) => b.checked).length;
+  const shiftTotal = qsa("#shiftChecklist input[type='checkbox']").length;
+
+  const kpiLine = analyticsKPIs
+    ? `KPI pulse (28d): Impressions/day ${formatNum(analyticsKPIs.impPerDay, 0)}, ER ${analyticsKPIs.engRate.toFixed(2)}%, Follows/1k ${analyticsKPIs.followPer1k.toFixed(2)}`
+    : "KPI pulse: analytics not uploaded yet.";
+
+  const report = [
+    `Type2Future Operator Report`,
+    `Date: ${new Date().toLocaleDateString()}`,
+    `Operator: ${operatorName}`,
+    `Objective: ${objective}`,
+    "",
+    kpiLine,
+    `Shift checklist completion: ${shiftDone}/${shiftTotal}`,
+    "",
+    `Wins:`,
+    wins,
+    "",
+    `Blockers:`,
+    blockers,
+    "",
+    `Opportunities:`,
+    opportunities,
+    "",
+    `Next Steps:`,
+    nextSteps,
+  ].join("\n");
+
+  el("shiftReportOutput").value = report;
+}
+
+async function copyShiftReport() {
+  const txt = el("shiftReportOutput").value || "";
+  if (!txt) return;
+  try {
+    await navigator.clipboard.writeText(txt);
+  } catch {}
 }
 
 function onCsvUpload(event) {
@@ -792,6 +946,7 @@ async function runAgent() {
   localStorage.setItem(STORAGE.apiKey, key);
 
   const modeInstruction = {
+    operator: "Create a complete operator shift brief: priorities, posting slots, engagement targets, escalation checks, and end-of-day report checklist.",
     planner: "Create a practical day plan with 5 steps, estimated time, and expected KPI impact.",
     ideate: "Generate 12 post ideas. For each: hook, signal, implication, close.",
     draft: "Write one complete high-performing post in this account's voice.",

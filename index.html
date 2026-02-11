@@ -40,6 +40,7 @@
       <nav class="nav card">
         <button class="nav-btn active" data-view="dashboard">Dashboard</button>
         <button class="nav-btn" data-view="strategy">Strategy</button>
+        <button class="nav-btn" data-view="operator">Operator Console</button>
         <button class="nav-btn" data-view="content">Content Lab</button>
         <button class="nav-btn" data-view="analytics">Analytics</button>
         <button class="nav-btn" data-view="calendar">Weekly Plan</button>
@@ -151,6 +152,112 @@
 DON'T: generic one-liners, contextless hype, reactive spam replies.</textarea>
           </article>
         </div>
+      </section>
+
+      <section class="view" id="view-operator">
+        <div class="grid-2">
+          <article class="card">
+            <h3>Operator Handoff</h3>
+            <label for="operatorName">Operator name</label>
+            <input id="operatorName" type="text" placeholder="Name of assigned social media operator" />
+            <label for="operatorShiftObjective">Current shift objective</label>
+            <textarea id="operatorShiftObjective" rows="3" placeholder="Example: Increase follows per 1k impressions this week"></textarea>
+            <label for="operatorConstraints">Non-negotiables</label>
+            <textarea id="operatorConstraints" rows="5">- Protect brand voice: ambitious, precise, positive, abundance-first.
+- No generic hype posts.
+- Every flagship post must include a concrete implication.
+- Escalate sensitive or controversial topics before publishing.</textarea>
+            <button class="btn" id="saveOperatorProfile">Save Handoff Profile</button>
+            <p id="handoffStatus" class="tiny">Save once, then operator can execute daily.</p>
+          </article>
+
+          <article class="card">
+            <h3>Shift Checklist</h3>
+            <div class="checklist" id="shiftChecklist"></div>
+            <div class="progress-wrap">
+              <div class="progress-bar"><span id="shiftProgressFill"></span></div>
+              <p id="shiftProgressText" class="tiny">0/0 complete</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <h3>Engagement Rules of Engagement</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Scenario</th>
+                    <th>Operator action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>High-quality founder/researcher thread</td><td>Add a value-dense reply with synthesis, then optionally quote with implication.</td></tr>
+                  <tr><td>Low-signal hype trend</td><td>Skip unless a strong Type2Future angle exists.</td></tr>
+                  <tr><td>Direct question from serious account</td><td>Respond in under 2 hours with concrete answer + forward-looking close.</td></tr>
+                  <tr><td>Polarizing political bait</td><td>Do not engage. Escalate if brand risk exists.</td></tr>
+                  <tr><td>Partnership/collab inquiry</td><td>Acknowledge, collect context, add to opportunities log.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Escalation Matrix</h3>
+            <textarea id="escalationRules" rows="9">Escalate to founder before posting if:
+1) Topic is political, legal, regulatory, or can be interpreted as financial advice.
+2) Any claim lacks confidence in source quality.
+3) Post references specific people with critical framing.
+4) External request includes money, sponsorship, or PR risk.
+
+Escalation package must include:
+- Draft post
+- Source links
+- Risk note (1-2 lines)
+- Recommended action (post / revise / skip)</textarea>
+          </article>
+        </div>
+
+        <article class="card">
+          <h3>Arms & Ammunition</h3>
+          <p class="tiny">One-click prompts to speed up operator execution in AI Studio.</p>
+          <div class="seed-grid">
+            <button class="btn secondary prompt-seed" data-seed="Generate 7 high-signal post ideas for today from AI/energy/space signals. For each: hook, implication, close, and who it is for.">Idea Pack</button>
+            <button class="btn secondary prompt-seed" data-seed="Critique this draft ruthlessly for conversion and clarity. Return: score, top 3 fixes, and final rewrite.">Draft Critic</button>
+            <button class="btn secondary prompt-seed" data-seed="Turn this source signal into one flagship post, one supporting post, and 5 strategic replies in Type2Future voice.">Signal Repurposer</button>
+            <button class="btn secondary prompt-seed" data-seed="Create 10 high-value replies to top AI/energy founders today. Must add genuine insight, not praise-only replies.">Reply Sprint</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Daily Operator Report</h3>
+          <div class="grid-2">
+            <div>
+              <label for="shiftWins">Wins</label>
+              <textarea id="shiftWins" rows="3" placeholder="What worked today?"></textarea>
+            </div>
+            <div>
+              <label for="shiftBlockers">Blockers</label>
+              <textarea id="shiftBlockers" rows="3" placeholder="What slowed progress?"></textarea>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label for="shiftOpportunities">Opportunities</label>
+              <textarea id="shiftOpportunities" rows="3" placeholder="New opportunities spotted"></textarea>
+            </div>
+            <div>
+              <label for="shiftNextSteps">Next actions for tomorrow</label>
+              <textarea id="shiftNextSteps" rows="3" placeholder="What should happen next?"></textarea>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="generateShiftReport">Generate Report</button>
+            <button class="btn secondary" id="copyShiftReport">Copy Report</button>
+          </div>
+          <textarea id="shiftReportOutput" rows="10" placeholder="Daily report appears here"></textarea>
+        </article>
       </section>
 
       <section class="view" id="view-content">
@@ -275,6 +382,7 @@ DON'T: generic one-liners, contextless hype, reactive spam replies.</textarea>
             <input id="modelName" type="text" value="gpt-4.1-mini" />
             <label for="agentMode">Mode</label>
             <select id="agentMode">
+              <option value="operator">Operator shift brief</option>
               <option value="planner">Daily planner</option>
               <option value="ideate">Idea generator</option>
               <option value="draft">Draft writer</option>

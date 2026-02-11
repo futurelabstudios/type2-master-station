@@ -300,6 +300,12 @@ select:focus {
   grid-template-columns: 1fr 1fr;
 }
 
+.seed-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .stack {
   display: grid;
   gap: 8px;
@@ -453,7 +459,8 @@ td .slot {
   .grid-2,
   .grid-3,
   .grid-3.compact,
-  .btn-row {
+  .btn-row,
+  .seed-grid {
     grid-template-columns: 1fr;
   }
 
