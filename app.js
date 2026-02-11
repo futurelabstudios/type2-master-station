@@ -106,6 +106,7 @@ function init() {
   setTodayDate();
   renderPostLogs();
   renderActions();
+  renderHeroBrief();
 }
 
 function bindTabs() {
@@ -199,11 +200,16 @@ function saveChecklist() {
   localStorage.setItem(STORAGE.checklist, JSON.stringify(state));
 }
 
-function updateChecklistProgress() {
+function getChecklistProgress() {
   const boxes = qsa("#dailyChecklist input[type='checkbox']");
   const done = boxes.filter((b) => b.checked).length;
   const total = boxes.length;
   const pct = total ? (done / total) * 100 : 0;
+  return { done, total, pct };
+}
+
+function updateChecklistProgress() {
+  const { done, total, pct } = getChecklistProgress();
   el("dailyProgress").style.width = `${pct}%`;
   el("dailyProgressText").textContent = `${done}/${total} complete`;
 }
@@ -375,6 +381,81 @@ function renderActions() {
   wrap.innerHTML = items.length
     ? items.slice(0, 6).map((x) => `<div>${escape(x)}</div>`).join("")
     : "<div>Critical actions complete. Publish and move to Review.</div>";
+
+  renderHeroBrief();
+}
+
+function renderHeroBrief() {
+  const title = el("briefTitle");
+  const focus = el("briefFocus");
+  const list = el("briefList");
+  const score = el("briefScore");
+  if (!title || !focus || !list || !score) return;
+
+  const logs = getPostLogs();
+  const { done, total, pct } = getChecklistProgress();
+  const objectiveSet = Boolean(el("shiftObjective")?.value.trim());
+
+  let readiness = 0;
+  let focusText = "Setup baseline and build consistency.";
+  const insights = [];
+
+  if (kpi) {
+    readiness += 30;
+    if (kpi.f1k < 1) {
+      insights.push("Conversion gap: raise follows per 1k by strengthening the close.");
+      focusText = "Lift conversion on flagship posts.";
+    } else {
+      insights.push(`Conversion is solid at ${kpi.f1k.toFixed(2)} f/1k. Scale winning structure.`);
+      readiness += 8;
+      focusText = "Scale your winning post structure.";
+    }
+
+    if (kpi.er < 2.2) {
+      insights.push("Engagement is soft. Sharpen opening claim and source signal.");
+      if (focusText === "Setup baseline and build consistency.") {
+        focusText = "Increase engagement signal quality.";
+      }
+    } else {
+      insights.push(`Engagement quality is healthy at ${kpi.er.toFixed(2)}%. Preserve clarity.`);
+      readiness += 8;
+    }
+  } else {
+    insights.push("Upload analytics CSV to unlock data-backed strategic priorities.");
+  }
+
+  if (objectiveSet) {
+    readiness += 20;
+  } else {
+    insights.push("Set one weekly growth objective in Create to guide every draft.");
+  }
+
+  const logReadiness = Math.min(25, (logs.length / 5) * 25);
+  readiness += logReadiness;
+  if (logs.length < 5) {
+    insights.push(`Log ${5 - logs.length} more posts in Review for reliable pattern detection.`);
+  } else {
+    insights.push("Review data depth is sufficient to trust pattern insights.");
+  }
+
+  readiness += Math.min(25, (pct / 100) * 25);
+  insights.push(`Daily sprint progress: ${done}/${total} tasks complete.`);
+
+  readiness = Math.max(0, Math.min(100, Math.round(readiness)));
+
+  if (readiness >= 80) {
+    title.textContent = "System aligned. Publish your flagship post today.";
+  } else if (readiness >= 60) {
+    title.textContent = "Momentum is good. Tighten one weak link and ship.";
+  } else if (readiness >= 40) {
+    title.textContent = "Foundation is partial. Finish setup before scaling.";
+  } else {
+    title.textContent = "Low readiness. Complete the essentials first.";
+  }
+
+  focus.textContent = `Focus: ${focusText}`;
+  list.innerHTML = insights.slice(0, 4).map((item) => `<li>${escape(item)}</li>`).join("");
+  score.textContent = `Execution Readiness: ${readiness}/100`;
 }
 
 function genHook() {

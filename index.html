@@ -10,19 +10,30 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-card">
-      <div class="brand-row">
-        <p class="kicker">TYPE2FUTURE OPERATOR SUITE</p>
-        <span class="status-pill">Live Playbook</span>
+  <header class="hero">
+    <div class="hero-shell">
+      <div class="hero-main">
+        <p class="kicker">Type2Future Operator Suite</p>
+        <h1>Content Growth OS</h1>
+        <p class="hero-copy">A minimal, high-clarity command center for creating high-signal posts and compounding follower growth.</p>
+        <div class="hero-tags" aria-hidden="true">
+          <span>Signal Precision</span>
+          <span>Strategic Conversion</span>
+          <span>Daily Execution</span>
+        </div>
       </div>
-      <h1>Content Growth OS</h1>
-      <p class="sub">Daily operating system for growth: prioritize, publish, learn, improve.</p>
-      <div class="focus-row" aria-hidden="true">
-        <span class="focus-chip">Signal Quality</span>
-        <span class="focus-chip">Conversion Intent</span>
-        <span class="focus-chip">Daily Shipping</span>
-      </div>
+
+      <aside class="hero-brief" aria-live="polite">
+        <p class="brief-eyebrow">Operator Brief</p>
+        <h2 id="briefTitle">Load analytics to generate your daily brief.</h2>
+        <p class="brief-focus" id="briefFocus">Focus: Setup your baseline.</p>
+        <ul class="brief-list" id="briefList">
+          <li>Upload CSV and start the daily sprint checklist.</li>
+          <li>Set one weekly growth objective in Create.</li>
+          <li>Log at least 5 posts to unlock stronger pattern insights.</li>
+        </ul>
+        <p class="brief-score mono" id="briefScore">Execution Readiness: 0/100</p>
+      </aside>
     </div>
   </header>
 
@@ -37,7 +48,7 @@
     <section class="panel active" id="today">
       <div class="panel-head">
         <h2>Today</h2>
-        <p class="panel-sub">Track the core growth numbers and execute your highest-leverage actions.</p>
+        <p class="panel-sub">Track the few numbers that matter and execute your highest-leverage actions.</p>
       </div>
 
       <div class="row">
@@ -74,7 +85,7 @@
     <section class="panel" id="create">
       <div class="panel-head">
         <h2>Create</h2>
-        <p class="panel-sub">Move from source signal to polished draft with conversion-first structure.</p>
+        <p class="panel-sub">Transform source signal into posts with clarity, authority, and conversion intent.</p>
       </div>
 
       <label for="shiftObjective">Weekly growth objective</label>
@@ -139,7 +150,7 @@
     <section class="panel" id="intel">
       <div class="panel-head">
         <h2>Learn</h2>
-        <p class="panel-sub">Study proven accounts, extract one tactic, and apply it in the same day.</p>
+        <p class="panel-sub">Study proven accounts, extract one tactic, and apply it the same day.</p>
       </div>
 
       <div id="benchmarkCards" class="cards"></div>
@@ -156,7 +167,7 @@
     <section class="panel" id="review">
       <div class="panel-head">
         <h2>Review</h2>
-        <p class="panel-sub">Log outcomes and discover the formats that compound follower growth.</p>
+        <p class="panel-sub">Log outcomes and identify the post patterns that compound growth.</p>
       </div>
 
       <div class="grid2">
