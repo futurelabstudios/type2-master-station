@@ -21,6 +21,18 @@ Open in browser:
 
 No install or build step is required.
 
+## Auto deploy (GitHub -> Netlify)
+
+This repo uses GitHub Actions for Netlify production deploys on every push to `main`.
+
+Required one-time setup:
+
+1. In GitHub repo settings, add secret `NETLIFY_AUTH_TOKEN`.
+2. In Netlify, create a Personal Access Token (User settings -> Applications -> Personal access tokens).
+3. Push to `main` and verify workflow `Deploy to Netlify` succeeds.
+
+Site ID is already wired in workflow: `cb986de0-029f-478e-bb4d-1051ec155f16`.
+
 ## Analytics CSV expected
 
 - `Date`
